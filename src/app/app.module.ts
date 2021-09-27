@@ -6,6 +6,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppConfigService } from './services/app-config.service';
+import { HomeComponent } from './pages/home/home.component';
+import { CovidComponent } from './pages/covid/covid.component';
+import { VaccineComponent } from './pages/vaccine/vaccine.component';
 
 
 function appInitFactory(configService: AppConfigService): Function{
@@ -15,7 +18,10 @@ function appInitFactory(configService: AppConfigService): Function{
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    CovidComponent,
+    VaccineComponent
   ],
   imports: [
     BrowserModule,
