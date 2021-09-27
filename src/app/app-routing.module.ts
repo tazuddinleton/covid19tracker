@@ -6,8 +6,8 @@ import { VaccineComponent } from './pages/vaccine/vaccine.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
-  {path: 'country:/covid', component: CovidComponent},
-  {path: 'country:/vaccine', component: VaccineComponent}
+  {path: ':country/covid', component: CovidComponent},
+  {path: ':country/vaccine', component: VaccineComponent}
 ];
 
 @NgModule({

@@ -2,6 +2,10 @@
   <div class="d-flex justify-content-center">
     <div class="text-center">
       <h1 class="mx-auto my-0 text-uppercase">{{ title }}</h1>
+
+      <a [routerLink]="['canada', 'covid' ]">Covid</a>
+      <br>
+      <a [routerLink]="['canada', 'vaccine']">Vaccine</a>
     </div>
   </div>
   <router-outlet></router-outlet>
