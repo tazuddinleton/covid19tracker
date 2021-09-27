@@ -1,0 +1,5 @@
+{
+  "title": "Covid-19 Tracker App",
+  "version": "0.0.1",
+  "covidApiBase": "https://disease.sh"
+}
