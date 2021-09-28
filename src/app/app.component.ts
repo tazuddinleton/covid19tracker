@@ -6,14 +6,13 @@ import { AppConfigService } from './services/app-config.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
-
+export class AppComponent implements OnInit {
   title: string;
   version: string;
   constructor(private config: AppConfigService){}
 
   ngOnInit(){
-    this.title = this.config.get.title;
-    this.version = this.config.get.version;
+    this.title = this.config.data.title;
+    this.version = this.config.data.version;
   }
 }

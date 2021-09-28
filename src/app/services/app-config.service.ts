@@ -17,7 +17,7 @@ export class AppConfigService {
     }
   }
 
-  get get():AppConfig{
+  get data():AppConfig{
     return this._config;
   }
 }
