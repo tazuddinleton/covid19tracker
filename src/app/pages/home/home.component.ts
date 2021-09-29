@@ -11,6 +11,8 @@ import { Continent } from 'src/app/models/location/location';
 import { Subject } from 'rxjs';
 import { MapBuilder } from 'src/app/models/map/map-builder';
 import { ThrowStmt } from '@angular/compiler';
+import { CovidDataService } from 'src/app/services/covid-data.service';
+import { mergeMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -27,19 +29,28 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
 
   @ViewChild('mapdiv') mapContainer: ElementRef
-  constructor(private loc: LocationService) {}
+  constructor(private loc: LocationService, private covData: CovidDataService) {}
 
   ngOnInit(): void {
-
-    this.$selectedContinent.subscribe((c: Continent) => {
-      console.log("Selected continent code: ", c);
-      this.drawSelectedContinent(c);
-    })
-
-
     this.loc.getContinents()
-    .subscribe(c => this.continents = c);
-
+    .subscribe(conts => this.continents = conts);
+    // todo: fix error when continent deselected
+    this.$selectedContinent.pipe(
+      map(c => !c ? <Continent>{} : c),
+      mergeMap(continent =>
+        this.covData.getCountries(continent?.countries?.map(c => c.code))
+          .pipe(map(data => {
+              continent?.countries?.map(country => {
+                country.covidInfo = data.find(x=> x.countryInfo.iso2 === country.code)
+                return country;
+              });
+              return continent;
+          }))
+        )
+    ).subscribe(res => {
+      this.drawSelectedContinent(res);
+      console.log(res);
+    });
   }
 
   ngAfterViewInit() {
@@ -60,8 +71,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     .withHomeButton()
     .withContinents(c?.name)
     .withCountries()
+    .withBubbles(c)
     .build();
-
   }
 
 }

@@ -4,6 +4,7 @@ import am4geodata_worldLow from '@amcharts/amcharts4-geodata/worldLow';
 import am4geodata_continentsLow from '@amcharts/amcharts4-geodata/continentsLow';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import * as _ from 'lodash';
+import { Continent } from '../location/location';
 
 export class MapBuilder {
   private readonly mapChart: am4maps.MapChart;
@@ -12,6 +13,9 @@ export class MapBuilder {
 
   private countrySeries: am4maps.MapPolygonSeries;
   private countryTemplate: am4maps.MapPolygon;
+
+  private bubbleSeries: am4maps.MapImageSeries;
+  private bubbleTemplate: am4maps.MapPolygon;
 
   private hoverColor: am4core.Color = am4core.color('#9a7bca');
 
@@ -115,6 +119,7 @@ export class MapBuilder {
         return x;
       });
       this.callbacks.push(() => {
+        this.showCountries();
         this.mapChart.zoomToMapObject(this.continentSeries.getPolygonById(sid));
       })
     }
@@ -159,6 +164,128 @@ export class MapBuilder {
     return this;
   }
 
+  withBubbles(continent?: Continent): MapBuilder{
+    if(!continent?.countries?.length){
+      return this;
+    }
+    continent.countries =  continent.countries.filter(x=> !!x.covidInfo);
+
+    let mapData = continent.countries.map(country => {
+      country.covidInfo.id = country.covidInfo.countryInfo.iso2
+      return country.covidInfo;
+    });
+
+    console.log('map data', mapData);
+
+
+    // Bubble series
+  this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
+  this.bubbleSeries.data = JSON.parse(JSON.stringify(mapData));
+
+  this.bubbleSeries.dataFields.value = "active";
+  this.bubbleSeries.dataFields['active'] = "active";
+  this.bubbleSeries.dataFields['deaths'] = "deaths";
+  this.bubbleSeries.dataFields['cases'] = "cases";
+  this.bubbleSeries.dataFields['recovered'] = "recovered";
+  this.bubbleSeries.dataFields.id = "id";
+
+  // adjust tooltip
+  this.bubbleSeries.tooltip.animationDuration = 0;
+  this.bubbleSeries.tooltip.showInViewport = false;
+  this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
+  this.bubbleSeries.tooltip.getStrokeFromObject = true;
+  this.bubbleSeries.tooltip.getFillFromObject = false;
+  this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
+  this.bubbleSeries.tooltip.background.fill = am4core.color("#000000");
+
+  var imageTemplate = this.bubbleSeries.mapImages.template;
+  // if you want bubbles to become bigger when zoomed, set this to false
+  imageTemplate.nonScaling = true;
+  imageTemplate.strokeOpacity = 0;
+  imageTemplate.fillOpacity = 0.55;
+  imageTemplate.tooltipText = `
+    country: {country}\n
+    cases: [bold]{cases}[/],
+    active: [bold]{active}[/],
+    deaths: [bold]{deaths}[/],
+    recovered: [bold]{recovered}[/]
+  `;
+  imageTemplate.applyOnClones = true;
+
+  imageTemplate.events.on("over", this.handleImageOver);
+  imageTemplate.events.on("out", this.handleImageOut);
+  imageTemplate.events.on("hit", this.handleImageHit);
+
+  // this is needed for the tooltip to point to the top of the circle instead of the middle
+  imageTemplate.adapter.add("tooltipY", (tooltipY, target) => {
+    return -target.children.getIndex(0)['radius'];
+  })
+
+  // When hovered, circles become non-opaque
+  var imageHoverState = imageTemplate.states.create("hover");
+  imageHoverState.properties.fillOpacity = 1;
+
+  // add circle inside the image
+  var circle = imageTemplate.createChild(am4core.Circle);
+  // this makes the circle to pulsate a bit when showing it
+  circle.hiddenState.properties.scale = 0.0001;
+  circle.hiddenState.transitionDuration = 2000;
+  circle.defaultState.transitionDuration = 2000;
+  circle.defaultState.transitionEasing = am4core.ease.elasticOut;
+  // later we set fill color on template (when changing what type of data the map should show) and all the clones get the color because of this
+  circle.applyOnClones = true;
+
+  // heat rule makes the bubbles to be of a different width. Adjust min/max for smaller/bigger radius of a bubble
+  this.bubbleSeries.heatRules.push({
+    "target": circle,
+    "property": "radius",
+    "min": 3,
+    "max": 30,
+    "dataField": "value"
+  })
+
+  // when data items validated, hide 0 value bubbles (because min size is set)
+  this.bubbleSeries.events.on("dataitemsvalidated", () => {
+    this.bubbleSeries.dataItems.each((dataItem) => {
+      var mapImage = dataItem.mapImage;
+      var circle = mapImage.children.getIndex(0);
+      if (mapImage.dataItem.value == 0) {
+        circle.hide(0);
+      }
+      else if (circle.isHidden || circle.isHiding) {
+        circle.show();
+      }
+    })
+  })
+
+  // this places bubbles at the visual center of a country
+  imageTemplate.adapter.add("latitude", (latitude, target) => {
+    var polygon = this.countrySeries.getPolygonById(target.dataItem.id);
+    if (polygon) {
+      target.disabled = false;
+      return polygon.visualLatitude;
+    }
+    else {
+      target.disabled = true;
+    }
+    return latitude;
+  })
+
+  imageTemplate.adapter.add("longitude", (longitude, target) => {
+    var polygon = this.countrySeries.getPolygonById(target.dataItem.id);
+    if (polygon) {
+      target.disabled = false;
+      return polygon.visualLongitude;
+    }
+    else {
+      target.disabled = true;
+    }
+    return longitude;
+  })
+
+    return this;
+  }
+
   build() {
     setTimeout(() => {
       this.callbacks.forEach(fn => fn());
@@ -169,11 +296,32 @@ export class MapBuilder {
     this.countryTemplate.hide();
   }
 
+  private showCountries(){
+    if (!this.countrySeries.visible) {
+      this.countrySeries.visible = true;
+    }
+    this.countryTemplate.show();
+  }
+
   private zoomToContinent(target: am4maps.MapObject){
     if (!this.countrySeries.visible) {
       this.countrySeries.visible = true;
     }
     this.mapChart.zoomToMapObject(target);
     this.countryTemplate.show();
+  }
+
+
+
+  private handleImageOver(event) {
+    //rollOverCountry(polygonSeries.getPolygonById(event.target.dataItem.id));
+  }
+
+  private handleImageOut(event) {
+    //rollOutCountry(polygonSeries.getPolygonById(event.target.dataItem.id));
+  }
+
+  private handleImageHit(event) {
+    //selectCountry(polygonSeries.getPolygonById(event.target.dataItem.id));
   }
 }

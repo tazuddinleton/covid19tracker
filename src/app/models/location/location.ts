@@ -1,11 +1,12 @@
+import { CountryInfo, CovidInfo } from "../covid-info";
 
 export interface Country {
   code:string;
   name:string;
   continent?:string
   flag?:string
+  covidInfo?: CovidInfo
 }
-
 
 export interface Continent{
   code:string;
