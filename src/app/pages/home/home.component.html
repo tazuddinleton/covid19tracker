@@ -1,9 +1,15 @@
 
 <div class="row">
-  <p-dropdown [options]="continents" [(ngModel)]="selectedContinent"></p-dropdown>
+  <p-dropdown
+    [options]="continents"
+    [(ngModel)]="selectedContinent"
+    optionLabel="name"
+    placeholder="Select a continent"
+    [showClear]="true"
+    ></p-dropdown>
 </div>
 <div class="row">
 
-  <div id="mapdiv"></div>
+  <div #mapdiv id="mapdiv"></div>
 </div>
 
