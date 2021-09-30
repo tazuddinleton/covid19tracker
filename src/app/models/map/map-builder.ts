@@ -5,6 +5,8 @@ import am4geodata_continentsLow from '@amcharts/amcharts4-geodata/continentsLow'
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import * as _ from 'lodash';
 import { Continent } from '../location/location';
+import { SpritePointerTypeEvent } from '@amcharts/amcharts4/.internal/core/SpriteEvents';
+import { CovidInfo } from '../covid-info';
 
 export class MapBuilder {
   private readonly mapChart: am4maps.MapChart;
@@ -18,6 +20,7 @@ export class MapBuilder {
   private bubbleTemplate: am4maps.MapPolygon;
 
   private hoverColor: am4core.Color = am4core.color('#9a7bca');
+
 
   private callbacks: Function[] = [];
 
@@ -73,13 +76,13 @@ export class MapBuilder {
 
     //this.continentTemplate.events.on('hit', (ev) => this.zoomToContinent(ev.target));
 
-    var contintentHover = this.continentTemplate.states.create('hover');
-    contintentHover.properties.fill = this.hoverColor;
-    contintentHover.properties.stroke = this.hoverColor;
+    // var contintentHover = this.continentTemplate.states.create('hover');
+    // contintentHover.properties.fill = this.hoverColor;
+    // contintentHover.properties.stroke = this.hoverColor;
 
     var continentActive = this.continentTemplate.states.create('active');
-    contintentHover.properties.fill = this.hoverColor;
-    contintentHover.properties.stroke = this.hoverColor;
+    continentActive.properties.fill = this.hoverColor;
+    continentActive.properties.stroke = this.hoverColor;
 
     this.continentSeries.dataFields.zoomLevel = 'zoomLevel';
     this.continentSeries.dataFields.zoomGeoPoint = 'zoomGeoPoint';
@@ -126,7 +129,7 @@ export class MapBuilder {
     return this;
   }
 
-  withCountries(included: string[] = [], excluded: string[] = ['AQ']) {
+  withCountries(clickHandler?: (ev: SpritePointerTypeEvent) => void) {
     this.countrySeries = new am4maps.MapPolygonSeries();
     this.mapChart.series.push(this.countrySeries);
 
@@ -134,11 +137,9 @@ export class MapBuilder {
     this.countrySeries.visible = false; // start off as hidden
     this.countrySeries.geodata = am4geodata_worldLow;
     this.countrySeries.useGeodata = true;
+    this.countrySeries.exclude = ['AQ'];
+    this.countrySeries.dataFields.id = "id";
 
-    this.countrySeries.exclude = excluded;
-    if (included.length > 0) {
-      this.countrySeries.include = included;
-    }
     // Hide each country so we can fade them in
     this.countrySeries.events.once('inited', () => {
       this.hideCountries();
@@ -151,10 +152,10 @@ export class MapBuilder {
     this.countryTemplate.strokeOpacity = 0.5;
     this.countryTemplate.nonScalingStroke = true;
     this.countryTemplate.tooltipText = '{name}';
-    this.countryTemplate.events.on('hit', (event) => {
-      this.mapChart.zoomToMapObject(event.target);
 
-    });
+    if(clickHandler){
+      this.countryTemplate.events.on('hit', clickHandler);
+    }
 
     var countryHover = this.countryTemplate.states.create('hover');
     countryHover.properties.fill = this.hoverColor;
@@ -175,19 +176,18 @@ export class MapBuilder {
       return country.covidInfo;
     });
 
-    console.log('map data', mapData);
-
-
     // Bubble series
   this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
   this.bubbleSeries.data = JSON.parse(JSON.stringify(mapData));
-
   this.bubbleSeries.dataFields.value = "active";
   this.bubbleSeries.dataFields['active'] = "active";
   this.bubbleSeries.dataFields['deaths'] = "deaths";
   this.bubbleSeries.dataFields['cases'] = "cases";
   this.bubbleSeries.dataFields['recovered'] = "recovered";
   this.bubbleSeries.dataFields.id = "id";
+
+  this.setDataToCountrySeries(mapData);
+
 
   // adjust tooltip
   this.bubbleSeries.tooltip.animationDuration = 0;
@@ -211,10 +211,6 @@ export class MapBuilder {
     recovered: [bold]{recovered}[/]
   `;
   imageTemplate.applyOnClones = true;
-
-  imageTemplate.events.on("over", this.handleImageOver);
-  imageTemplate.events.on("out", this.handleImageOut);
-  imageTemplate.events.on("hit", this.handleImageHit);
 
   // this is needed for the tooltip to point to the top of the circle instead of the middle
   imageTemplate.adapter.add("tooltipY", (tooltipY, target) => {
@@ -286,11 +282,11 @@ export class MapBuilder {
     return this;
   }
 
-  build() {
+  build(): am4maps.MapChart {
     setTimeout(() => {
       this.callbacks.forEach(fn => fn());
     }, 0)
-    return this;
+    return this.mapChart;
   }
   private hideCountries() {
     this.countryTemplate.hide();
@@ -303,25 +299,14 @@ export class MapBuilder {
     this.countryTemplate.show();
   }
 
-  private zoomToContinent(target: am4maps.MapObject){
-    if (!this.countrySeries.visible) {
-      this.countrySeries.visible = true;
-    }
-    this.mapChart.zoomToMapObject(target);
-    this.countryTemplate.show();
-  }
 
-
-
-  private handleImageOver(event) {
-    //rollOverCountry(polygonSeries.getPolygonById(event.target.dataItem.id));
-  }
-
-  private handleImageOut(event) {
-    //rollOutCountry(polygonSeries.getPolygonById(event.target.dataItem.id));
-  }
-
-  private handleImageHit(event) {
-    //selectCountry(polygonSeries.getPolygonById(event.target.dataItem.id));
+  private setDataToCountrySeries(mapData: CovidInfo[]){
+    this.countrySeries.data = JSON.parse(JSON.stringify(mapData));
+    this.countrySeries.dataFields.value = "active";
+    this.countrySeries.dataFields['active'] = "active";
+    this.countrySeries.dataFields['deaths'] = "deaths";
+    this.countrySeries.dataFields['cases'] = "cases";
+    this.countrySeries.dataFields['recovered'] = "recovered";
+    this.countrySeries.dataFields.id = "id";
   }
 }

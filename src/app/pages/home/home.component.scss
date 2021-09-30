@@ -2,3 +2,72 @@
   width: 100%;
   height: 87vh;
 }
+
+
+.ib-country-summary-panel-title {
+  height: 2.667rem;
+}
+
+.ib-country-summary-panel-title h1 {
+  color: #000;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.ib-country-summary-panel-title img{
+  margin-right: 0.6667rem;
+  margin-top: .5rem;
+  height: 1.333rem;
+}
+
+
+.ib-lab-agreement .documents-list {
+  list-style: none;
+  padding: 0 0 0 .2rem;
+  margin-bottom: .5rem;
+}
+.ib-lab-agreement .documents-list li {
+  line-height: 1.4rem;
+}
+.ib-lab-agreement .documents-list li:before {
+  font-family: "Font Awesome 5 Pro";
+  content: "\f15c";
+  font-weight: 400;
+  margin-right: .7rem;
+}
+.ib-lab-agreement .status-list {
+  list-style: none;
+  padding: 0 0 0 0;
+  margin-bottom: .5rem;
+}
+.ib-lab-agreement .status-list li {
+  display: inline;
+}
+.ib-lab-agreement .documents-list,
+.ib-lab-agreement .status-list {
+  margin-left: 0 !important;
+}
+.ib-lab-agreement .documents-list li,
+.ib-lab-agreement .status-list li{
+  padding-left: 0 !important;
+}
+.ib-lab-agreement .status-list strong,
+.ib-lab-agreement .status-list span {
+  display: inline;
+}
+.ib-lab-agreement .status-list strong {
+  margin-right: .1rem;
+}
+.ib-lab-agreement .status-list span {
+  margin-right: .7rem;
+}
+.ib-lab-agreement .not-in-force {
+  color: #DAA520;
+}
+.ib-lab-agreement .terminated {
+  color: #b30838;
+}
+.ib-lab-agreement .in-force {
+  color: #00660d;
+}

@@ -10,7 +10,6 @@ import { AppConfigService } from './services/app-config.service';
 import { HomeComponent } from './pages/home/home.component';
 import { CovidComponent } from './pages/covid/covid.component';
 import { VaccineComponent } from './pages/vaccine/vaccine.component';
-import { MapComponent } from './pages/home/map/map.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 
@@ -25,8 +24,7 @@ function appInitFactory(configService: AppConfigService): Function{
     AppComponent,
     HomeComponent,
     CovidComponent,
-    VaccineComponent,
-    MapComponent
+    VaccineComponent
   ],
   imports: [
     BrowserModule,

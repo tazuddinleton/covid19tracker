@@ -13,3 +13,52 @@
   <div #mapdiv id="mapdiv"></div>
 </div>
 
+
+<div #countryPopup class="ml-1 d-none">
+  <ng-container *ngIf="selectedCountryInfo">
+    <div class="ib-country-summary-panel-title d-flex">
+      <img src="{{selectedCountryInfo?.countryInfo?.flag}}" alt="{{selectedCountryInfo?.country}}"
+        title="{{selectedCountryInfo?.country}}">
+      <h1>{{selectedCountryInfo?.country}}</h1>
+    </div>
+    <p>
+      <strong>Population:</strong>
+      <span class="effective"> {{selectedCountryInfo?.population}}</span>
+    </p>
+    <ng-container [ngTemplateOutlet]="countryInfo"
+    [ngTemplateOutletContext]="{info: selectedCountryInfo}">
+  </ng-container>
+
+  </ng-container>
+</div>
+
+<ng-template #countryInfo let-info="info">
+  <div class="ib-lab-agreement">
+    <div >
+      <p class="font-weight-bold mb-1"></p>
+      <a [routerLink]="[info.country, 'covid' ]">Covid News</a> |
+      <a [routerLink]="[info.country, 'vaccine']">Vaccine News</a>
+    </div>
+    <ul class="status-list">
+
+      <li>
+        <strong>Active:</strong>
+        <span class="effective">
+          {{info?.cases}}
+        </span>
+      </li>
+      <li >
+        <strong>Recovered:</strong>
+        <span class="effective"> {{info?.cases}}</span>
+      </li>
+      <li >
+        <strong>Deaths:</strong>
+        <span class="effective"> {{info?.cases}}</span>
+      </li>
+      <li >
+        <strong>Vaccinated:</strong>
+        <span class="effective"> {{info?.cases}}</span>
+      </li>
+    </ul>
+  </div>
+</ng-template>
