@@ -36,8 +36,8 @@
   <div class="ib-lab-agreement">
     <div >
       <p class="font-weight-bold mb-1"></p>
-      <a [routerLink]="[info.country, 'covid' ]">Covid News</a> |
-      <a [routerLink]="[info.country, 'vaccine']">Vaccine News</a>
+      <a [routerLink]="[info?.countryInfo?.iso2, 'covid' ]">Covid News</a> |
+      <a [routerLink]="[info?.countryInfo?.iso2, 'vaccine']">Vaccine News</a>
     </div>
     <ul class="status-list">
 

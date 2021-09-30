@@ -1,1 +1,31 @@
-<p>covid works!</p>
+<p-tabView>
+  <p-tabPanel header="Map View">
+    <div class="row">
+      <div #mapdiv id="mapdiv"></div>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Tabular View">
+    <div class="card">
+      <h5>Summary of last 30 days</h5>
+      <p-table [value]="data">
+          <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="code">Date <p-sortIcon field="date"></p-sortIcon></th>
+                  <th pSortableColumn="code">Active <p-sortIcon field="cases"></p-sortIcon></th>
+                  <th pSortableColumn="name">Recovered <p-sortIcon field="recovered"></p-sortIcon></th>
+                  <th pSortableColumn="category">Deaths <p-sortIcon field="deaths"></p-sortIcon></th>
+
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-info>
+              <tr>
+                  <td>{{info.date | date:'dd/MM/yyyy'}}</td>
+                  <td>{{info.cases}}</td>
+                  <td>{{info.recovered}}</td>
+                  <td>{{info.deaths}}</td>
+              </tr>
+          </ng-template>
+      </p-table>
+  </div>
+  </p-tabPanel>
+</p-tabView>

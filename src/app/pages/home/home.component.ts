@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Dropdown } from 'primeng/dropdown';
 
 import * as am4core from '@amcharts/amcharts4/core';
@@ -34,6 +34,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('mapdiv') mapContainer: ElementRef;
   @ViewChild('countryPopup') countryPopup: ElementRef<HTMLElement>;
+
+
+
   constructor(private loc: LocationService, private covData: CovidDataService) {}
 
 
@@ -60,14 +63,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.disposeMapChart();
-    this.mapChart = new MapBuilder(this.mapContainer.nativeElement)
-    .withMercatorProjection()
-    .withZoomControl()
-    .withHomeButton()
-    .withContinents()
-    .withCountries()
-    .build();
+      this.disposeMapChart();
+      this.mapChart = new MapBuilder(this.mapContainer.nativeElement)
+      .withMercatorProjection()
+      .withZoomControl()
+      .withHomeButton()
+      .withContinents()
+      .withCountries()
+      .build();
   }
 
   drawSelectedContinent(c: Continent) {
@@ -100,5 +103,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.disposeMapChart();
 
+  }
+
+  navigate(path: string){
+    console.log('clicked');
+  }
+
+  hello(){
+    console.log('hello');
   }
 }

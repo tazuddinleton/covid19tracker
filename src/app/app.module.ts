@@ -10,8 +10,14 @@ import { AppConfigService } from './services/app-config.service';
 import { HomeComponent } from './pages/home/home.component';
 import { CovidComponent } from './pages/covid/covid.component';
 import { VaccineComponent } from './pages/vaccine/vaccine.component';
+
 import { DropdownModule } from 'primeng/dropdown';
+import { TabViewModule } from 'primeng/tabview';
+import { TableModule } from 'primeng/table';
+
 import { FormsModule } from '@angular/forms';
+import { RouteReuseStrategy } from '@angular/router';
+import { RouterStrategy } from './router-strategy';
 
 
 function appInitFactory(configService: AppConfigService): Function{
@@ -32,7 +38,9 @@ function appInitFactory(configService: AppConfigService): Function{
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    DropdownModule
+    DropdownModule,
+    TabViewModule,
+    TableModule
   ],
   providers: [
     {
@@ -40,6 +48,10 @@ function appInitFactory(configService: AppConfigService): Function{
       useFactory: appInitFactory,
       multi: true,
       deps: [AppConfigService]
+    },
+    {
+      provide: RouteReuseStrategy,
+      useClass: RouterStrategy
     }
   ],
   bootstrap: [AppComponent]

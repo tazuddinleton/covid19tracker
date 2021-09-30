@@ -34,3 +34,33 @@ export interface CountryInfo {
   long: number;
   flag: string;
 }
+
+export interface HistoricalData{
+  country: string;
+  date: Date;
+  cases: number;
+  deaths: number;
+  recovered: number;
+}
+
+export interface HistoryRaw{
+  country: string;
+  province: string[];
+  timeline: Timeline;
+}
+
+export interface Cases {
+}
+
+export interface Deaths {
+}
+
+export interface Recovered {
+}
+
+export interface Timeline {
+  cases: Cases;
+  deaths: Deaths;
+  recovered: Recovered;
+}
+

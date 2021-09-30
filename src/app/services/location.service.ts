@@ -21,7 +21,7 @@ export class LocationService {
   }
 
   getContinents():Observable<Continent[]> {
-    return of([...this.continents.values()]);
+    return of([...this.continents.values()].filter(x=> x.code !== 'AN'));
   }
 
   getCountryCodes(contCode: string): Observable<string[]>{
