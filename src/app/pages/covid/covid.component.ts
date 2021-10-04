@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { MapBuilder } from 'src/app/models/map/map-builder';
 import * as am4maps from '@amcharts/amcharts4/maps';
 import { CovidDataService } from 'src/app/services/covid-data.service';
 import { HistoricalData } from 'src/app/models/covid-info';
@@ -9,6 +8,7 @@ import { LocationService } from 'src/app/services/location.service';
 import * as _ from 'lodash';
 import { GeoDataService } from 'src/app/services/geo-data.service';
 import { CovidMap } from 'src/app/models/map/covid-map';
+import { CountryMapBuilder } from 'src/app/models/map/country-map-builder';
 
 @Component({
   selector: 'app-covid',
@@ -51,7 +51,7 @@ export class CovidComponent implements OnInit {
 
   private drawMap(){
     this.disposeMapChart();
-    this.countryMap = new MapBuilder(this.mapContainer.nativeElement)
+    this.countryMap = new CountryMapBuilder(this.mapContainer.nativeElement)
     .withMercatorProjection()
     .withZoomControl()
     .withHomeButton()
@@ -59,10 +59,7 @@ export class CovidComponent implements OnInit {
       geoDataUrl:this.geoData.getUriByCode(this.countryCode),
       hideAtFirst: true
     })
-    .withStateBubbles({data: this.data.map(x => {
-
-      return x;
-    }), fields: ["deaths", "cases", "recovered", "id"], valueField: "cases"})
+    .withStateBubbles({data: this.data, fields: ["deaths", "cases", "recovered", "id"], valueField: "cases"})
     .build();
   }
 

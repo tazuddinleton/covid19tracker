@@ -100,7 +100,9 @@ export class CovidDataService {
   private processData(data: HistoryRaw[]): HistoricalData[]{
     let res: HistoricalData[] = [];
     data.forEach(d => {
-      console.log(d);
+      if(!d){
+        return;
+      }
       let cases = this.transform(d.timeline.cases);
       let deaths = this.transform(d.timeline.deaths);
       cases.forEach((v, k) => {
