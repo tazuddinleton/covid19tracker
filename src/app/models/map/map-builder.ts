@@ -189,7 +189,7 @@ export class MapBuilder {
   }
 
   withBubbles(config: BubbleConfig): MapBuilder{
-    console.log('ibubble config', config)
+
     if(!config?.data?.length){
       return this;
     }
@@ -197,7 +197,7 @@ export class MapBuilder {
     // Bubble series
   this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
   this.bubbleSeries.data = JSON.parse(JSON.stringify(config.data));
-  console.log('bubble config: ',config);
+
   config.fields.forEach(f => this.bubbleSeries.dataFields[f]=f);
   this.bubbleSeries.dataFields.value = config.valueField;
 
@@ -298,7 +298,7 @@ export class MapBuilder {
   }
 
   withStateBubbles(config: BubbleConfig): MapBuilder{
-    console.log('ibubble config', config)
+
     if(!config?.data?.length){
       return this;
     }
@@ -306,7 +306,7 @@ export class MapBuilder {
     // Bubble series
   this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
   this.bubbleSeries.data = JSON.parse(JSON.stringify(config.data));
-  console.log('bubble config: ',config);
+
   config.fields.forEach(f => this.bubbleSeries.dataFields[f]=f);
   this.bubbleSeries.dataFields.value = config.valueField;
 

@@ -54,7 +54,7 @@ export class CovidComponent implements OnInit {
     .withZoomControl()
     .withHomeButton()
     .withCountries({
-      geoDataUrl:this.geoData.getUri(this.countryName),
+      geoDataUrl:this.geoData.getUriByCode(this.countryCode),
       hideAtFirst: true
     })
     .withStateBubbles({data: this.data.map(x => {
