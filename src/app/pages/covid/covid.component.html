@@ -7,7 +7,8 @@
   <p-tabPanel header="Tabular View">
     <div class="card">
       <h5>Summary of last 30 days</h5>
-      <p-table [value]="data">
+      <p-table [value]="data" [paginator]="true" [rows]="10"  [showCurrentPageReport]="true" responsiveLayout="scroll"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
           <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="province">Province <p-sortIcon field="province"></p-sortIcon></th>

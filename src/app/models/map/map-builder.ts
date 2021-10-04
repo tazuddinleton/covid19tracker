@@ -11,6 +11,11 @@ import { CountryConfig } from './country-config';
 import { BubbleConfig } from './bubble-config';
 import { CovidMap } from './covid-map';
 
+
+
+
+
+
 export class MapBuilder {
   private readonly mapChart: am4maps.MapChart;
   private continentSeries: am4maps.MapPolygonSeries;
@@ -22,7 +27,7 @@ export class MapBuilder {
   private bubbleSeries: am4maps.MapImageSeries;
   private bubbleTemplate: am4maps.MapPolygon;
 
-  private hoverColor: am4core.Color = am4core.color('#9a7bca');
+  private hoverColor: am4core.Color = am4core.color('#01BAEF');
   private homeButton: am4core.Button;
 
   private callbacks: Function[] = [];
@@ -218,20 +223,14 @@ export class MapBuilder {
   this.bubbleSeries.tooltip.getStrokeFromObject = true;
   this.bubbleSeries.tooltip.getFillFromObject = false;
   this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
-  this.bubbleSeries.tooltip.background.fill = am4core.color("#000000");
+  this.bubbleSeries.tooltip.background.fill = am4core.color("#26081C");
 
   var imageTemplate = this.bubbleSeries.mapImages.template;
   // if you want bubbles to become bigger when zoomed, set this to false
   imageTemplate.nonScaling = true;
   imageTemplate.strokeOpacity = 0;
   imageTemplate.fillOpacity = 0.55;
-  imageTemplate.tooltipText = `
-    country: {country}\n
-    cases: [bold]{cases}[/],
-    active: [bold]{active}[/],
-    deaths: [bold]{deaths}[/],
-    recovered: [bold]{recovered}[/]
-  `;
+  imageTemplate.tooltipText = `Cases: [bold]{cases}[/], Active: [bold]{active}[/], Deaths: [bold]{deaths}[/], Recovered: [bold]{recovered}[/]`;
   imageTemplate.applyOnClones = true;
 
   // this is needed for the tooltip to point to the top of the circle instead of the middle
@@ -241,7 +240,7 @@ export class MapBuilder {
 
   // When hovered, circles become non-opaque
   var imageHoverState = imageTemplate.states.create("hover");
-  imageHoverState.properties.fillOpacity = 1;
+  imageHoverState.properties.fillOpacity = .80;
 
   // add circle inside the image
   var circle = imageTemplate.createChild(am4core.Circle);
@@ -257,8 +256,8 @@ export class MapBuilder {
   this.bubbleSeries.heatRules.push({
     "target": circle,
     "property": "radius",
-    "min": 3,
-    "max": 30,
+    "min": 10,
+    "max": 100,
     "dataField": "value"
   })
 
@@ -278,116 +277,6 @@ export class MapBuilder {
 
   // this places bubbles at the visual center of a country
   imageTemplate.adapter.add("latitude", (latitude, target) => {
-    var polygon = this.countrySeries.getPolygonById(target.dataItem.id);
-    if (polygon) {
-      target.disabled = false;
-      return polygon.visualLatitude;
-    }
-    else {
-      target.disabled = true;
-    }
-    return latitude;
-  })
-
-  imageTemplate.adapter.add("longitude", (longitude, target) => {
-    var polygon = this.countrySeries.getPolygonById(target.dataItem.id);
-    if (polygon) {
-      target.disabled = false;
-      return polygon.visualLongitude;
-    }
-    else {
-      target.disabled = true;
-    }
-    return longitude;
-  })
-
-    return this;
-  }
-
-  withStateBubbles(config: BubbleConfig): MapBuilder{
-
-    if(!config?.data?.length){
-      return this;
-    }
-
-    // Bubble series
-  this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
-  this.bubbleSeries.data = JSON.parse(JSON.stringify(config.data));
-
-  config.fields.forEach(f => this.bubbleSeries.dataFields[f]=f);
-  this.bubbleSeries.dataFields.value = config.valueField;
-
-//  this.setDataToCountrySeries(config.data);
-
-
-  // adjust tooltip
-  this.bubbleSeries.tooltip.animationDuration = 0;
-  this.bubbleSeries.tooltip.showInViewport = false;
-  this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
-  this.bubbleSeries.tooltip.getStrokeFromObject = true;
-  this.bubbleSeries.tooltip.getFillFromObject = false;
-  this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
-  this.bubbleSeries.tooltip.background.fill = am4core.color("#000000");
-
-  var imageTemplate = this.bubbleSeries.mapImages.template;
-  // if you want bubbles to become bigger when zoomed, set this to false
-  imageTemplate.nonScaling = true;
-  imageTemplate.strokeOpacity = 0;
-  imageTemplate.fillOpacity = 0.55;
-  imageTemplate.tooltipText = `
-    country: {country}\n
-    cases: [bold]{cases}[/],
-    active: [bold]{active}[/],
-    deaths: [bold]{deaths}[/],
-    recovered: [bold]{recovered}[/]
-  `;
-  imageTemplate.applyOnClones = true;
-
-  // this is needed for the tooltip to point to the top of the circle instead of the middle
-  // imageTemplate.adapter.add("tooltipY", (tooltipY, target) => {
-  //   return -target.children.getIndex(0)['radius'];
-  // })
-
-  // When hovered, circles become non-opaque
-  var imageHoverState = imageTemplate.states.create("hover");
-  imageHoverState.properties.fillOpacity = 1;
-
-  // add circle inside the image
-  var circle = imageTemplate.createChild(am4core.Circle);
-  // this makes the circle to pulsate a bit when showing it
-  circle.hiddenState.properties.scale = 0.0001;
-  circle.hiddenState.transitionDuration = 2000;
-  circle.defaultState.transitionDuration = 2000;
-  circle.defaultState.transitionEasing = am4core.ease.elasticOut;
-  // later we set fill color on template (when changing what type of data the map should show) and all the clones get the color because of this
-  circle.applyOnClones = true;
-
-  // heat rule makes the bubbles to be of a different width. Adjust min/max for smaller/bigger radius of a bubble
-  this.bubbleSeries.heatRules.push({
-    "target": circle,
-    "property": "radius",
-    "min": 3,
-    "max": 30,
-    "dataField": "value"
-  })
-
-  // when data items validated, hide 0 value bubbles (because min size is set)
-  this.bubbleSeries.events.on("dataitemsvalidated", () => {
-    this.bubbleSeries.dataItems.each((dataItem) => {
-      var mapImage = dataItem.mapImage;
-      var circle = mapImage.children.getIndex(0);
-      if (mapImage.dataItem.value == 0) {
-        circle.hide(0);
-      }
-      else if (circle.isHidden || circle.isHiding) {
-        circle.show();
-      }
-    })
-  })
-
-  // this places bubbles at the visual center of a country
-  imageTemplate.adapter.add("latitude", (latitude, target) => {
-    console.log('target.dataItem',target.dataItem);
     var polygon = this.countrySeries.getPolygonById(target.dataItem.id);
     if (polygon) {
       target.disabled = false;

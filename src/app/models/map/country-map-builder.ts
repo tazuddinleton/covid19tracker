@@ -23,7 +23,7 @@ export class CountryMapBuilder {
   private bubbleSeries: am4maps.MapImageSeries;
   private bubbleTemplate: am4maps.MapPolygon;
 
-  private hoverColor: am4core.Color = am4core.color('#9a7bca');
+  private hoverColor: am4core.Color = am4core.color('#01BAEF');
   private homeButton: am4core.Button;
 
   private callbacks = [];
@@ -122,9 +122,9 @@ export class CountryMapBuilder {
   }
   withStateBubbles(config: BubbleConfig): CountryMapBuilder{
 
-    if(!config?.data?.length){
-      return this;
-    }
+  if(!config?.data?.length){
+    return this;
+  }
 
     // Bubble series
   this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
@@ -143,24 +143,20 @@ export class CountryMapBuilder {
   this.bubbleSeries.tooltip.getStrokeFromObject = true;
   this.bubbleSeries.tooltip.getFillFromObject = false;
   this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
-  this.bubbleSeries.tooltip.background.fill = am4core.color("#000000");
+  this.bubbleSeries.tooltip.background.fill = am4core.color("#26081C");
 
   var imageTemplate = this.bubbleSeries.mapImages.template;
   // if you want bubbles to become bigger when zoomed, set this to false
   imageTemplate.nonScaling = true;
   imageTemplate.strokeOpacity = 0;
   imageTemplate.fillOpacity = 0.55;
-  imageTemplate.tooltipText = `
-    cases: [bold]{cases}[/],
-    deaths: [bold]{deaths}[/],
-    recovered: [bold]{recovered}[/]
-  `;
+  imageTemplate.tooltipText = `Cases: [bold]{cases}[/], Deaths: [bold]{deaths}[/], Recovered: [bold]{recovered}[/]`;
   imageTemplate.applyOnClones = true;
 
-  // this is needed for the tooltip to point to the top of the circle instead of the middle
-  // imageTemplate.adapter.add("tooltipY", (tooltipY, target) => {
-  //   return -target.children.getIndex(0)['radius'];
-  // })
+ // this is needed for the tooltip to point to the top of the circle instead of the middle
+  imageTemplate.adapter.add("tooltipY", (tooltipY, target) => {
+    return -target.children.getIndex(0)['radius'];
+  })
 
   // When hovered, circles become non-opaque
   var imageHoverState = imageTemplate.states.create("hover");
@@ -180,13 +176,14 @@ export class CountryMapBuilder {
   this.bubbleSeries.heatRules.push({
     "target": circle,
     "property": "radius",
-    "min": 3,
-    "max": 30,
+    "min": 10,
+    "max": 100,
     "dataField": "value"
   })
 
   // when data items validated, hide 0 value bubbles (because min size is set)
   this.bubbleSeries.events.on("dataitemsvalidated", () => {
+    console.log('dataitemsvalidated');
     this.bubbleSeries.dataItems.each((dataItem) => {
       var mapImage = dataItem.mapImage;
       var circle = mapImage.children.getIndex(0);
