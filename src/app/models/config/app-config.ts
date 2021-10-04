@@ -7,7 +7,7 @@ export interface AppConfig {
   error?: any;
   geo?: Geo;
   locationInfo?: RawLocation[];
-
+  countriesStates?: CountryState[];
 }
 
 export interface Geo {
@@ -25,4 +25,15 @@ export interface MapInfo{
 
 export enum MapQuality{
   Low = 0, High = 1
+}
+
+export interface CountryState{
+  name: string;
+  abbreviation: string,
+  states: State[]
+}
+
+export interface State{
+  name: string;
+  abbreviation: string;
 }

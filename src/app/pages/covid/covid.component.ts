@@ -36,11 +36,12 @@ export class CovidComponent implements OnInit {
   ngOnInit(): void {
     this.covData.getCountrySummary(this.countryCode, 30)
     .subscribe(d => {
-      this.data = d;
+      this.data = d.map(x=> {
+        x.id = x.stateCode ? `${this.countryCode}-${x.stateCode}` : x.province;
+        return x;
+      });
       this.drawMap();
     });
-
-
   }
 
   ngAfterViewInit(){
@@ -58,7 +59,7 @@ export class CovidComponent implements OnInit {
       hideAtFirst: true
     })
     .withStateBubbles({data: this.data.map(x => {
-      x['id'] = 'CA-AB';
+
       return x;
     }), fields: ["deaths", "cases", "recovered", "id"], valueField: "cases"})
     .build();

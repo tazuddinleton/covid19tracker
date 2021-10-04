@@ -36,8 +36,11 @@ export interface CountryInfo {
 }
 
 export interface HistoricalData{
+  id?: string;
   country: string;
   province: string;
+  stateName?: string;
+  stateCode?: string;
   date: Date;
   cases: number;
   deaths: number;
