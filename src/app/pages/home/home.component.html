@@ -13,13 +13,12 @@
   <div #mapdiv id="mapdiv"></div>
 </div>
 
-
-<div #countryPopup class="ml-1 d-none">
+<div #countryPopup class="ml-1 d-none" >
   <ng-container *ngIf="selectedCountryInfo">
     <div class="ib-country-summary-panel-title d-flex">
       <img src="{{selectedCountryInfo?.countryInfo?.flag}}" alt="{{selectedCountryInfo?.country}}"
         title="{{selectedCountryInfo?.country}}">
-      <h1>{{selectedCountryInfo?.country}}</h1>
+      <h1 (click)="hello()">{{selectedCountryInfo?.country}}</h1>
     </div>
     <p>
       <strong>Population:</strong>
@@ -36,7 +35,7 @@
   <div class="ib-lab-agreement">
     <div >
       <p class="font-weight-bold mb-1"></p>
-      <a [routerLink]="[info?.countryInfo?.iso2, 'covid' ]">Covid News</a> |
+      <a [routerLink]="[info?.countryInfo?.iso2, 'covid']">Covid News</a> |
       <a [routerLink]="[info?.countryInfo?.iso2, 'vaccine']">Vaccine News</a>
     </div>
     <ul class="status-list">

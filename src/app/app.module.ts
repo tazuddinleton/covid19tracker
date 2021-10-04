@@ -20,6 +20,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { RouterStrategy } from './router-strategy';
 
 
+
 function appInitFactory(configService: AppConfigService): Function{
   return () => configService.loadConfig();
 }
@@ -30,7 +31,8 @@ function appInitFactory(configService: AppConfigService): Function{
     AppComponent,
     HomeComponent,
     CovidComponent,
-    VaccineComponent
+    VaccineComponent,
+
   ],
   imports: [
     BrowserModule,

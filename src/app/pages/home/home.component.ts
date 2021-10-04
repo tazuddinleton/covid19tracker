@@ -14,6 +14,7 @@ import { ThrowStmt } from '@angular/compiler';
 import { CovidDataService } from 'src/app/services/covid-data.service';
 import { mergeMap, map } from 'rxjs/operators';
 import { CovidInfo } from 'src/app/models/covid-info';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -31,14 +32,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private mapChart: am4maps.MapChart;
-
   @ViewChild('mapdiv') mapContainer: ElementRef;
   @ViewChild('countryPopup') countryPopup: ElementRef<HTMLElement>;
 
-
-
-  constructor(private loc: LocationService, private covData: CovidDataService) {}
-
+  constructor(private loc: LocationService, private covData: CovidDataService, private router: Router) {}
 
   ngOnInit(): void {
     this.loc.getContinents()
@@ -74,14 +71,23 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   drawSelectedContinent(c: Continent) {
+
+    c.countries =  c.countries.filter(x=> !!x.covidInfo);
+
+    let mapData = c.countries.map(country => {
+      country.covidInfo.id = country.covidInfo.countryInfo.iso2
+      return country.covidInfo;
+    });
+
+    console.log('mapdata', mapData);
     this.disposeMapChart();
     this.mapChart = new MapBuilder(this.mapContainer.nativeElement)
     .withMercatorProjection()
     .withZoomControl()
     .withHomeButton()
     .withContinents(c?.name)
-    .withCountries(ev=> this.onCountryClicked(ev))
-    .withBubbles(c)
+    .withCountries({clickHandler: ev=> this.onCountryClicked(ev)})
+    .withBubbles({data: mapData, fields: ["active", "deaths", "cases", "recovered", "id"], valueField: "active"})
     .build();
   }
 
@@ -106,7 +112,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   navigate(path: string){
-    console.log('clicked');
+
   }
 
   hello(){

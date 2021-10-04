@@ -10,7 +10,8 @@
       <p-table [value]="data">
           <ng-template pTemplate="header">
               <tr>
-                <th pSortableColumn="code">Date <p-sortIcon field="date"></p-sortIcon></th>
+                <th pSortableColumn="province">Province <p-sortIcon field="province"></p-sortIcon></th>
+                <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
                   <th pSortableColumn="code">Active <p-sortIcon field="cases"></p-sortIcon></th>
                   <th pSortableColumn="name">Recovered <p-sortIcon field="recovered"></p-sortIcon></th>
                   <th pSortableColumn="category">Deaths <p-sortIcon field="deaths"></p-sortIcon></th>
@@ -19,6 +20,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-info>
               <tr>
+                <td>{{info.province}}</td>
                   <td>{{info.date | date:'dd/MM/yyyy'}}</td>
                   <td>{{info.cases}}</td>
                   <td>{{info.recovered}}</td>

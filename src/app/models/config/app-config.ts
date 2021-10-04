@@ -5,5 +5,12 @@ export interface AppConfig {
   version?: string,
   covidApiBase?: string;
   error?: any;
-  locationInfo: RawLocation[];
+  geo?: Geo;
+  locationInfo?: RawLocation[];
 }
+
+export interface Geo {
+  dataUrl?: string;
+  quality?: string;
+}
+

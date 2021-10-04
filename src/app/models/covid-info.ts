@@ -37,6 +37,7 @@ export interface CountryInfo {
 
 export interface HistoricalData{
   country: string;
+  province: string;
   date: Date;
   cases: number;
   deaths: number;
@@ -45,7 +46,7 @@ export interface HistoricalData{
 
 export interface HistoryRaw{
   country: string;
-  province: string[];
+  province: string[] | string;
   timeline: Timeline;
 }
 

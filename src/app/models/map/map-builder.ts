@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 import { Continent } from '../location/location';
 import { SpritePointerTypeEvent } from '@amcharts/amcharts4/.internal/core/SpriteEvents';
 import { CovidInfo } from '../covid-info';
+import { CountryConfig } from './country-config';
+import { BubbleConfig } from './bubble-config';
 
 export class MapBuilder {
   private readonly mapChart: am4maps.MapChart;
@@ -129,21 +131,29 @@ export class MapBuilder {
     return this;
   }
 
-  withCountries(clickHandler?: (ev: SpritePointerTypeEvent) => void) {
+  withCountries(config?: CountryConfig) {
+
     this.countrySeries = new am4maps.MapPolygonSeries();
     this.mapChart.series.push(this.countrySeries);
 
     var countries = this.countrySeries.mapPolygons;
-    this.countrySeries.visible = false; // start off as hidden
-    this.countrySeries.geodata = am4geodata_worldLow;
+    this.countrySeries.visible = !!config?.hideAtFirst; // start off as hidden
     this.countrySeries.useGeodata = true;
     this.countrySeries.exclude = ['AQ'];
     this.countrySeries.dataFields.id = "id";
 
-    // Hide each country so we can fade them in
-    this.countrySeries.events.once('inited', () => {
-      this.hideCountries();
-    });
+
+    if(config?.geoDataUrl){
+      console.log(config);
+      this.countrySeries.geodataSource.url = config?.geoDataUrl;
+      this.countrySeries.geodataSource.load();
+      this.countrySeries.geodataSource.events.on('done', (ev) => {
+        this.showCountries();
+        console.log('showCountries')
+      })
+    }else{
+      this.countrySeries.geodata = am4geodata_worldLow;
+    }
 
     this.countryTemplate = countries.template;
     this.countryTemplate.applyOnClones = true;
@@ -153,40 +163,45 @@ export class MapBuilder {
     this.countryTemplate.nonScalingStroke = true;
     this.countryTemplate.tooltipText = '{name}';
 
-    if(clickHandler){
-      this.countryTemplate.events.on('hit', clickHandler);
-    }
-
     var countryHover = this.countryTemplate.states.create('hover');
     countryHover.properties.fill = this.hoverColor;
     countryHover.properties.fillOpacity = 0.8; // Reduce conflict with back to continents map label
     countryHover.properties.stroke = this.hoverColor;
     countryHover.properties.strokeOpacity = 1;
+
+  if(config?.clickHandler){
+      this.countryTemplate.events.on('hit', config?.clickHandler);
+    }
+
+    if(config?.included?.length){
+      this.countrySeries.include = config?.included;
+    }
+
+      // Hide each country so we can fade them in
+    if(config?.hideAtFirst){
+      this.hideCountries();
+      this.countrySeries.events.once('inited', () => {
+        this.hideCountries();
+      });
+    }
+
     return this;
   }
 
-  withBubbles(continent?: Continent): MapBuilder{
-    if(!continent?.countries?.length){
+  withBubbles(config: BubbleConfig): MapBuilder{
+    console.log('ibubble config', config)
+    if(!config?.data?.length){
       return this;
     }
-    continent.countries =  continent.countries.filter(x=> !!x.covidInfo);
-
-    let mapData = continent.countries.map(country => {
-      country.covidInfo.id = country.covidInfo.countryInfo.iso2
-      return country.covidInfo;
-    });
 
     // Bubble series
   this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
-  this.bubbleSeries.data = JSON.parse(JSON.stringify(mapData));
-  this.bubbleSeries.dataFields.value = "active";
-  this.bubbleSeries.dataFields['active'] = "active";
-  this.bubbleSeries.dataFields['deaths'] = "deaths";
-  this.bubbleSeries.dataFields['cases'] = "cases";
-  this.bubbleSeries.dataFields['recovered'] = "recovered";
-  this.bubbleSeries.dataFields.id = "id";
+  this.bubbleSeries.data = JSON.parse(JSON.stringify(config.data));
+  console.log('bubble config: ',config);
+  config.fields.forEach(f => this.bubbleSeries.dataFields[f]=f);
+  this.bubbleSeries.dataFields.value = config.valueField;
 
-  this.setDataToCountrySeries(mapData);
+  this.setDataToCountrySeries(config.data);
 
 
   // adjust tooltip
@@ -282,20 +297,130 @@ export class MapBuilder {
     return this;
   }
 
+  withStateBubbles(config: BubbleConfig): MapBuilder{
+    console.log('ibubble config', config)
+    if(!config?.data?.length){
+      return this;
+    }
+
+    // Bubble series
+  this.bubbleSeries = this.mapChart.series.push(new am4maps.MapImageSeries());
+  this.bubbleSeries.data = JSON.parse(JSON.stringify(config.data));
+  console.log('bubble config: ',config);
+  config.fields.forEach(f => this.bubbleSeries.dataFields[f]=f);
+  this.bubbleSeries.dataFields.value = config.valueField;
+
+//  this.setDataToCountrySeries(config.data);
+
+
+  // adjust tooltip
+  this.bubbleSeries.tooltip.animationDuration = 0;
+  this.bubbleSeries.tooltip.showInViewport = false;
+  this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
+  this.bubbleSeries.tooltip.getStrokeFromObject = true;
+  this.bubbleSeries.tooltip.getFillFromObject = false;
+  this.bubbleSeries.tooltip.background.fillOpacity = 0.2;
+  this.bubbleSeries.tooltip.background.fill = am4core.color("#000000");
+
+  var imageTemplate = this.bubbleSeries.mapImages.template;
+  // if you want bubbles to become bigger when zoomed, set this to false
+  imageTemplate.nonScaling = true;
+  imageTemplate.strokeOpacity = 0;
+  imageTemplate.fillOpacity = 0.55;
+  imageTemplate.tooltipText = `
+    country: {country}\n
+    cases: [bold]{cases}[/],
+    active: [bold]{active}[/],
+    deaths: [bold]{deaths}[/],
+    recovered: [bold]{recovered}[/]
+  `;
+  imageTemplate.applyOnClones = true;
+
+  // this is needed for the tooltip to point to the top of the circle instead of the middle
+  // imageTemplate.adapter.add("tooltipY", (tooltipY, target) => {
+  //   return -target.children.getIndex(0)['radius'];
+  // })
+
+  // When hovered, circles become non-opaque
+  var imageHoverState = imageTemplate.states.create("hover");
+  imageHoverState.properties.fillOpacity = 1;
+
+  // add circle inside the image
+  var circle = imageTemplate.createChild(am4core.Circle);
+  // this makes the circle to pulsate a bit when showing it
+  circle.hiddenState.properties.scale = 0.0001;
+  circle.hiddenState.transitionDuration = 2000;
+  circle.defaultState.transitionDuration = 2000;
+  circle.defaultState.transitionEasing = am4core.ease.elasticOut;
+  // later we set fill color on template (when changing what type of data the map should show) and all the clones get the color because of this
+  circle.applyOnClones = true;
+
+  // heat rule makes the bubbles to be of a different width. Adjust min/max for smaller/bigger radius of a bubble
+  this.bubbleSeries.heatRules.push({
+    "target": circle,
+    "property": "radius",
+    "min": 3,
+    "max": 30,
+    "dataField": "value"
+  })
+
+  // when data items validated, hide 0 value bubbles (because min size is set)
+  this.bubbleSeries.events.on("dataitemsvalidated", () => {
+    this.bubbleSeries.dataItems.each((dataItem) => {
+      var mapImage = dataItem.mapImage;
+      var circle = mapImage.children.getIndex(0);
+      if (mapImage.dataItem.value == 0) {
+        circle.hide(0);
+      }
+      else if (circle.isHidden || circle.isHiding) {
+        circle.show();
+      }
+    })
+  })
+
+  // this places bubbles at the visual center of a country
+  imageTemplate.adapter.add("latitude", (latitude, target) => {
+    console.log('target.dataItem',target.dataItem);
+    var polygon = this.countrySeries.getPolygonById(target.dataItem.id);
+    if (polygon) {
+      target.disabled = false;
+      return polygon.visualLatitude;
+    }
+    else {
+      target.disabled = true;
+    }
+    return latitude;
+  })
+
+  imageTemplate.adapter.add("longitude", (longitude, target) => {
+    var polygon = this.countrySeries.getPolygonById(target.dataItem.id);
+    if (polygon) {
+      target.disabled = false;
+      return polygon.visualLongitude;
+    }
+    else {
+      target.disabled = true;
+    }
+    return longitude;
+  })
+
+    return this;
+  }
+
   build(): am4maps.MapChart {
     setTimeout(() => {
       this.callbacks.forEach(fn => fn());
     }, 0)
     return this.mapChart;
   }
+
   private hideCountries() {
+    this.countrySeries.hide();
     this.countryTemplate.hide();
   }
 
   private showCountries(){
-    if (!this.countrySeries.visible) {
-      this.countrySeries.visible = true;
-    }
+    this.countrySeries.show();
     this.countryTemplate.show();
   }
 
