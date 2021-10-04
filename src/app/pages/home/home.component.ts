@@ -8,13 +8,15 @@ import am4geodata_continentsLow from '@amcharts/amcharts4-geodata/continentsLow'
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import { LocationService } from 'src/app/services/location.service';
 import { Continent, Country } from 'src/app/models/location/location';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { MapBuilder } from 'src/app/models/map/map-builder';
 import { ThrowStmt } from '@angular/compiler';
 import { CovidDataService } from 'src/app/services/covid-data.service';
 import { mergeMap, map } from 'rxjs/operators';
 import { CovidInfo } from 'src/app/models/covid-info';
 import { Router } from '@angular/router';
+import { CovidMap } from 'src/app/models/map/covid-map';
+import { SubsManService } from 'src/app/services/subs-man.service';
 
 
 @Component({
@@ -31,16 +33,22 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.$selectedContinent.next(continent);
   }
 
-  private mapChart: am4maps.MapChart;
+  private continentMap: CovidMap;
   @ViewChild('mapdiv') mapContainer: ElementRef;
   @ViewChild('countryPopup') countryPopup: ElementRef<HTMLElement>;
 
-  constructor(private loc: LocationService, private covData: CovidDataService, private router: Router) {}
+
+  constructor(private loc: LocationService,
+    private covData: CovidDataService,
+    private router: Router, private subs: SubsManService) {}
 
   ngOnInit(): void {
+
+    let s =
     this.loc.getContinents()
     .subscribe(conts => this.continents = conts);
 
+    let s1 =
     this.$selectedContinent.pipe(
       map(c => !c ? <Continent>{} : c),
       mergeMap(continent =>
@@ -57,11 +65,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.drawSelectedContinent(res);
       console.log(res);
     });
+
+    this.subs.add(s, s1);
   }
 
   ngAfterViewInit() {
       this.disposeMapChart();
-      this.mapChart = new MapBuilder(this.mapContainer.nativeElement)
+      this.continentMap = new MapBuilder(this.mapContainer.nativeElement)
       .withMercatorProjection()
       .withZoomControl()
       .withHomeButton()
@@ -72,16 +82,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   drawSelectedContinent(c: Continent) {
 
-    c.countries =  c.countries.filter(x=> !!x.covidInfo);
+    c.countries =  c?.countries?.filter(x=> !!x.covidInfo);
 
-    let mapData = c.countries.map(country => {
+    let mapData = c?.countries?.map(country => {
       country.covidInfo.id = country.covidInfo.countryInfo.iso2
       return country.covidInfo;
     });
 
-    console.log('mapdata', mapData);
     this.disposeMapChart();
-    this.mapChart = new MapBuilder(this.mapContainer.nativeElement)
+    this.continentMap = new MapBuilder(this.mapContainer.nativeElement)
     .withMercatorProjection()
     .withZoomControl()
     .withHomeButton()
@@ -94,28 +103,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private onCountryClicked(event){
     this.selectedCountryInfo = <CovidInfo>event.target.dataItem.dataContext;
     console.log(this.selectedCountryInfo);
-    this.mapChart.closeAllPopups();
+    this.continentMap.mapChart.closeAllPopups();
     if(this.selectedCountryInfo?.countryInfo){
-      setTimeout(() => this.mapChart.openPopup(this.countryPopup.nativeElement.innerHTML));
+      setTimeout(() => this.continentMap.mapChart.openPopup(this.countryPopup.nativeElement.innerHTML));
     }
   }
 
   private disposeMapChart() {
-    if (this.mapChart) {
-      this.mapChart.dispose();
+    if (this.continentMap) {
+      this.continentMap.mapChart.dispose();
     }
   }
 
   ngOnDestroy(): void {
     this.disposeMapChart();
-
-  }
-
-  navigate(path: string){
-
-  }
-
-  hello(){
-    console.log('hello');
+    this.subs.clearAll();
   }
 }

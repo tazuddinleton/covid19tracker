@@ -8,6 +8,7 @@ import { AppConfigService } from 'src/app/services/app-config.service';
 import { LocationService } from 'src/app/services/location.service';
 import * as _ from 'lodash';
 import { GeoDataService } from 'src/app/services/geo-data.service';
+import { CovidMap } from 'src/app/models/map/covid-map';
 
 @Component({
   selector: 'app-covid',
@@ -16,7 +17,7 @@ import { GeoDataService } from 'src/app/services/geo-data.service';
 })
 export class CovidComponent implements OnInit {
 
-  private mapChart: am4maps.MapChart;
+  private countryMap: CovidMap;
   countryCode: string;
   countryName: string;
   data: HistoricalData[]
@@ -50,7 +51,7 @@ export class CovidComponent implements OnInit {
 
   private drawMap(){
     this.disposeMapChart();
-    this.mapChart = new MapBuilder(this.mapContainer.nativeElement)
+    this.countryMap = new MapBuilder(this.mapContainer.nativeElement)
     .withMercatorProjection()
     .withZoomControl()
     .withHomeButton()
@@ -66,13 +67,12 @@ export class CovidComponent implements OnInit {
   }
 
   private disposeMapChart() {
-    if (this.mapChart) {
-      this.mapChart.dispose();
+    if (this.countryMap) {
+      this.countryMap.mapChart.dispose();
     }
   }
 
   ngOnDestroy(): void {
     this.disposeMapChart();
-
   }
 }

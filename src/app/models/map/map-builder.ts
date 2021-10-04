@@ -9,6 +9,7 @@ import { SpritePointerTypeEvent } from '@amcharts/amcharts4/.internal/core/Sprit
 import { CovidInfo } from '../covid-info';
 import { CountryConfig } from './country-config';
 import { BubbleConfig } from './bubble-config';
+import { CovidMap } from './covid-map';
 
 export class MapBuilder {
   private readonly mapChart: am4maps.MapChart;
@@ -22,7 +23,7 @@ export class MapBuilder {
   private bubbleTemplate: am4maps.MapPolygon;
 
   private hoverColor: am4core.Color = am4core.color('#9a7bca');
-
+  private homeButton: am4core.Button;
 
   private callbacks: Function[] = [];
 
@@ -34,6 +35,10 @@ export class MapBuilder {
     this.mapChart = am4core.create(this.container, am4maps.MapChart);
   }
 
+  goHome =  ()=> {
+      this.hideCountries();
+      this.mapChart.goHome();
+  }
   withMercatorProjection(): MapBuilder {
     this.mapChart.projection = new am4maps.projections.Mercator();
     return this;
@@ -45,19 +50,16 @@ export class MapBuilder {
   }
 
   withHomeButton() {
-    var homeButton = new am4core.Button();
-    homeButton.events.on('hit', (ev) => {
-      this.hideCountries();
-      this.mapChart.goHome();
-    });
-    homeButton.icon = new am4core.Sprite();
-    homeButton.padding(7, 5, 7, 5);
-    homeButton.width = 30;
-    homeButton.icon.path =
+    this.homeButton = new am4core.Button();
+    this.homeButton.events.on('hit', this.goHome );
+    this.homeButton.icon = new am4core.Sprite();
+    this.homeButton.padding(7, 5, 7, 5);
+    this.homeButton.width = 30;
+    this.homeButton.icon.path =
       'M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8';
-    homeButton.marginBottom = 10;
-    homeButton.parent = this.mapChart.zoomControl;
-    homeButton.insertBefore(this.mapChart.zoomControl.plusButton);
+      this.homeButton.marginBottom = 10;
+      this.homeButton.parent = this.mapChart.zoomControl;
+      this.homeButton.insertBefore(this.mapChart.zoomControl.plusButton);
     return this;
   }
 
@@ -126,6 +128,11 @@ export class MapBuilder {
       this.callbacks.push(() => {
         this.showCountries();
         this.mapChart.zoomToMapObject(this.continentSeries.getPolygonById(sid));
+      })
+    }else{
+      this.callbacks.push(() => {
+        this.hideCountries();
+        this.mapChart.goHome();
       })
     }
     return this;
@@ -407,11 +414,21 @@ export class MapBuilder {
     return this;
   }
 
-  build(): am4maps.MapChart {
+  build(): CovidMap {
     setTimeout(() => {
       this.callbacks.forEach(fn => fn());
     }, 0)
-    return this.mapChart;
+
+    return <CovidMap>{
+      mapChart: this.mapChart,
+      bubbleSeries: this.bubbleSeries,
+      bubbleTemplate: this.bubbleTemplate,
+      continentSeries: this.continentSeries,
+      continentTemplate: this.continentTemplate,
+      countrySeries: this.countrySeries,
+      countryTemplate: this.countryTemplate,
+      homButton: this.homeButton
+    }
   }
 
   private hideCountries() {
