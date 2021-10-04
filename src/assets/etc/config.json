@@ -2405,6 +2405,108 @@
                 "abbreviation": "YT"
             }
         ]
+    },
+    {
+      "name": "China",
+      "abbreviation": "CN",
+      "states": [
+        {
+          "name": "Anhui",
+          "abbreviation": "AH",
+          "name__1": "Hong Kong Special Administrative",
+          "abbreviation__1": "HK",
+          "name__2": "Shandong",
+          "abbreviation__2": "SD"
+        },
+        {
+          "name": "Beijing Municipality",
+          "abbreviation": "BJ",
+          "name__1": "Heilongjiang",
+          "abbreviation__1": "HL",
+          "name__2": "Shanghai Municipality",
+          "abbreviation__2": "SH"
+        },
+        {
+          "name": "Chongqing Municipality",
+          "abbreviation": "CQ",
+          "name__1": "Hunan",
+          "abbreviation__1": "HN",
+          "name__2": "Shaanxi",
+          "abbreviation__2": "SN"
+        },
+        {
+          "name": "Fujian",
+          "abbreviation": "FJ",
+          "name__1": "Jilin",
+          "abbreviation__1": "JL",
+          "name__2": "Shanxi",
+          "abbreviation__2": "SX"
+        },
+        {
+          "name": "Guangdong",
+          "abbreviation": "GD",
+          "name__1": "Jiangsu",
+          "abbreviation__1": "JS",
+          "name__2": "Tianjin Municipality",
+          "abbreviation__2": "TJ"
+        },
+        {
+          "name": "Gansu",
+          "abbreviation": "GS",
+          "name__1": "Jiangxi",
+          "abbreviation__1": "JX",
+          "name__2": "Taiwan",
+          "abbreviation__2": "TW"
+        },
+        {
+          "name": "Guangxi Zhuang Autonomous",
+          "abbreviation": "GX",
+          "name__1": "Liaoning",
+          "abbreviation__1": "LN",
+          "name__2": "Xinjiang Uyghur Autonomous",
+          "abbreviation__2": "XJ"
+        },
+        {
+          "name": "Guizhou",
+          "abbreviation": "GZ",
+          "name__1": "Macau Special Administrative",
+          "abbreviation__1": "MO",
+          "name__2": "Tibet Autonomous",
+          "abbreviation__2": "XZ"
+        },
+        {
+          "name": "Henan",
+          "abbreviation": "HA",
+          "name__1": "Inner Mongolia Autonomous",
+          "abbreviation__1": "NM",
+          "name__2": "Yunnan",
+          "abbreviation__2": "YN"
+        },
+        {
+          "name": "Hubei",
+          "abbreviation": "HB",
+          "name__1": "Ningxia Hui Autonomous",
+          "abbreviation__1": "NX",
+          "name__2": "Zhejiang",
+          "abbreviation__2": "ZJ"
+        },
+        {
+          "name": "Hebei",
+          "abbreviation": "HE",
+          "name__1": "Qinghai",
+          "abbreviation__1": "QH",
+          "name__2": "",
+          "abbreviation__2": ""
+        },
+        {
+          "name": "Hainan",
+          "abbreviation": "HI",
+          "name__1": "Sichuan",
+          "abbreviation__1": "SC",
+          "name__2": "",
+          "abbreviation__2": ""
+        }
+      ]
     }
 ]
 }

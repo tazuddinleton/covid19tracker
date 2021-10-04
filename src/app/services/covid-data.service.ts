@@ -5,7 +5,7 @@ import { defaultTo } from 'lodash';
 import { Observable, of, Subject, Subscriber } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { State } from '../models/config/app-config';
-import { CovidInfo, HistoricalData, HistoryRaw } from '../models/covid-info';
+import { CovidInfo, HistoricalData, HistoryRaw, UsStateResult } from '../models/covid-info';
 import { AppConfigService } from './app-config.service';
 
 @Injectable({
@@ -29,6 +29,9 @@ export class CovidDataService {
     if(!code){
       return of([])
     }
+    if(code === "US"){
+      return this.getUsSummary(code);
+    }
     this.http.get<HistoryRaw>(`${this.appConfig.data.covidApiBase}/v3/covid-19/historical/${code}?lastdays=${duration}`)
     .subscribe((d:HistoryRaw) => {
       if(d.province.length > 1) {
@@ -43,6 +46,25 @@ export class CovidDataService {
     });
     return this.$historicalData;
   }
+
+
+  private getUsSummary(code: string): Observable<HistoricalData[]>{
+    let stateMap = this.getStateMap(code);
+    return this.http.get<UsStateResult[]>(`${this.appConfig.data.covidApiBase}/v3/covid-19/states`)
+    .pipe(map(d => d.map(r => {
+      let s = stateMap.get(r.state.toLowerCase());
+      return <HistoricalData>{
+        cases: r.cases,
+        date: new Date(r.updated),
+        deaths: r.deaths,
+        stateCode: s?.abbreviation,
+        stateName: s?.name,
+        recovered: r.recovered,
+        province: r.state
+      }
+    })))
+  }
+
 
   private getEveryProvince(code: string, d: HistoryRaw, duration: number){
     let pp = [...d.province];
@@ -64,16 +86,12 @@ export class CovidDataService {
 
   private mapProvinceToState(data: HistoricalData[], countryCode: string): HistoricalData[]{
 
-    let c = this.appConfig.data.countriesStates.find(x=> x.abbreviation ==countryCode);
-    let map: Map<string, State> = new Map();
-    c.states.forEach(x => map.set(x.name.toLowerCase(), x));
 
+    let map = this.getStateMap(countryCode);
     data.forEach(d => {
       let s = map.get(d.province);
-      if(s){
-        d.stateCode = s.abbreviation;
-        d.stateName = s.name;
-      }
+      d.stateCode = s?.abbreviation;
+      d.stateName = s?.name;
     });
 
     return data;
@@ -87,7 +105,7 @@ export class CovidDataService {
       let deaths = this.transform(d.timeline.deaths);
       cases.forEach((v, k) => {
         res.push(<HistoricalData>{
-          province: d.province,
+          province: d.province['splice'] ? d.province[0] : d.province,
           date: new Date(k),
           cases: v,
           deaths: deaths.get(k),
@@ -103,6 +121,13 @@ export class CovidDataService {
     Object.keys(data).forEach(k => {
       map.set(k, data[k])
     });
+    return map;
+  }
+
+  private getStateMap(countryCode: string): Map<string, State>{
+    let c = this.appConfig.data.countriesStates.find(x=> x.abbreviation == countryCode);
+    let map: Map<string, State> = new Map();
+    c.states.forEach(x => map.set(x.name.toLowerCase(), x));
     return map;
   }
 
