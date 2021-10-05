@@ -26,7 +26,6 @@ export class AppComponent implements OnInit, OnDestroy {
     let s =
     this.stateMan.getSelectedCountryCode().subscribe(code => {
       this._selectedCountryCode = code;
-      console.log('in app component', code);
     });
     this.subsMan.add(s);
   }

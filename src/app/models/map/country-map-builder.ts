@@ -40,7 +40,6 @@ export class CountryMapBuilder {
   }
 
   goHome = () => {
-    console.log('going home');
     this.mapChart.goHome(1000);
   };
   withMercatorProjection(): CountryMapBuilder {
@@ -84,8 +83,6 @@ export class CountryMapBuilder {
     }
 
 
-    console.log(config.data[0]);
-
     // Hide each country so we can fade them in
     if (config?.hideAtFirst) {
       this.hideCountries();
@@ -95,7 +92,6 @@ export class CountryMapBuilder {
     }
 
     this.countrySeries.events.on('hit', (ev) => {
-      console.log(ev);
     })
 
     this.countrySeries.data = config.data;
@@ -123,7 +119,6 @@ export class CountryMapBuilder {
     this.callbacks.forEach((fn) => {
       fn();
     });
-    console.log('building', this.callbacks);
     return <CovidMap>{
       mapChart: this.mapChart,
       bubbleSeries: this.bubbleSeries,
@@ -148,7 +143,6 @@ export class CountryMapBuilder {
 
 
   private setDataToCountrySeries(mapData: CovidInfo[], config: BubbleConfig) {
-    console.log(config);
     config.fields.forEach((f) => (this.countrySeries.dataFields[f] = f));
     this.countrySeries.dataFields.value = config.valueField;
     this.countrySeries.data = mapData;

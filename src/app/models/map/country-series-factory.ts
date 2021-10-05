@@ -20,7 +20,6 @@ export class CountrySeriesFactory {
     countrySeries.dataFields.id = "id";
 
     if (config?.geoDataUrl) {
-      console.log(config);
       countrySeries.geodataSource.url = config?.geoDataUrl;
       countrySeries.geodataSource.load();
       countrySeries.geodataSource.events.on('done', doneCallback);

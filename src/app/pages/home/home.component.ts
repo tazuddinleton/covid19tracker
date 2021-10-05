@@ -57,7 +57,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         )
     ).subscribe(res => {
       this.drawSelectedContinent(res);
-      console.log(res);
     },err => console.error(err));
 
     this.subs.add(s, s1);
@@ -96,11 +95,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private onCountryClicked(event){
     this.selectedCountryInfo = <CovidInfo>event.target.dataItem.dataContext;
-    console.log(this.selectedCountryInfo);
     this.continentMap.mapChart.closeAllPopups();
     if(this.selectedCountryInfo?.countryInfo){
       this.stateMan.setSelectedCountryCode(this.selectedCountryInfo?.countryInfo.iso2);
-      console.log('opening pop up');
       setTimeout(() => this.continentMap.mapChart.openPopup(this.countryPopup.nativeElement.innerHTML));
     }
   }

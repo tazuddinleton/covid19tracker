@@ -16,7 +16,6 @@ export class GeoDataService {
     let geo = this.appConfig.data.geo;
     let name = _.camelCase(countryName.split(",")[0]);
     let res = `${geo.dataUrl}${name}${geo.quality}.json`;
-    console.log(res);
     return res;
   }
 
@@ -24,7 +23,6 @@ export class GeoDataService {
     let geo = this.appConfig.data.geo;
     let country = geo.geodataMap.get(code);
     let res = `${geo.dataUrl}${country.maps[geo.quality]}.json`;
-    console.log(res);
     return res;
   }
 }
