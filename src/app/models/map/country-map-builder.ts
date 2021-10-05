@@ -101,7 +101,8 @@ export class CountryMapBuilder {
 
     let imageTemplate = BubbleSeriesFactory.createImageTemplate(
       this.bubbleSeries,
-      this.countrySeries
+      this.countrySeries,
+      "State: {province}"
     );
     return this;
   }

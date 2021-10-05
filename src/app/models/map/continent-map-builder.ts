@@ -172,7 +172,8 @@ export class ContinentMapBuilder {
 
     let imageTemplate = BubbleSeriesFactory.createImageTemplate(
       this.bubbleSeries,
-      this.countrySeries
+      this.countrySeries,
+      "Country: {country}"
     );
     return this;
   }

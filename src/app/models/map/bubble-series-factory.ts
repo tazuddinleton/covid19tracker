@@ -28,14 +28,16 @@ export class BubbleSeriesFactory {
 
   public static createImageTemplate(
     series: am4maps.MapImageSeries,
-    parent: am4maps.MapPolygonSeries
+    parent: am4maps.MapPolygonSeries,
+    area: string
   ): am4maps.MapImage {
     let imageTemplate = series.mapImages.template;
     // if you want bubbles to become bigger when zoomed, set this to false
     imageTemplate.nonScaling = true;
     imageTemplate.strokeOpacity = 0;
     imageTemplate.fillOpacity = 0.55;
-    imageTemplate.tooltipText = `Cases: [bold]{cases}[/], Active: [bold]{active}[/], Deaths: [bold]{deaths}[/], Recovered: [bold]{recovered}[/]`;
+    imageTemplate.tooltipText = `${area}
+    Cases: [bold]{cases}[/], Active: [bold]{active}[/], Deaths: [bold]{deaths}[/], Recovered: [bold]{recovered}[/]`;
     imageTemplate.applyOnClones = true;
 
     // this is needed for the tooltip to point to the top of the circle instead of the middle
