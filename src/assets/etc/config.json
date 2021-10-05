@@ -1,5 +1,5 @@
 {
-  "title": "Covid-19 Tracker App",
+  "title": "Covid-19 Tracker",
   "version": "0.0.1",
   "covidApiBase": "https://disease.sh",
   "pastDataDuration": 30,

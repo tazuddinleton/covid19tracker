@@ -10,6 +10,7 @@ import { CovidInfo } from 'src/app/models/covid-info';
 import { Router } from '@angular/router';
 import { CovidMap } from 'src/app/models/map/covid-map';
 import { SubsManService } from 'src/app/services/subs-man.service';
+import { StateManService } from 'src/app/services/state-man.service';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private loc: LocationService,
     private covData: CovidDataService,
-    private router: Router, private subs: SubsManService) {}
+    private router: Router, private subs: SubsManService, private stateMan: StateManService) {}
 
   ngOnInit(): void {
 
@@ -98,7 +99,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.selectedCountryInfo);
     this.continentMap.mapChart.closeAllPopups();
     if(this.selectedCountryInfo?.countryInfo){
-
+      this.stateMan.setSelectedCountryCode(this.selectedCountryInfo?.countryInfo.iso2);
       console.log('opening pop up');
       setTimeout(() => this.continentMap.mapChart.openPopup(this.countryPopup.nativeElement.innerHTML));
     }
