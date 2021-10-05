@@ -44,10 +44,11 @@ export class CovidComponent implements OnInit, OnDestroy {
         x.id = x.stateCode ? `${this.countryCode}-${x.stateCode}` : x.province;
         return x;
       });
-      this.drawMap();
 
       if(this.data[0].province == "mainland"){
         this.drawSelectedCountry(this.countryCode);
+      }else{
+        this.drawMap();
       }
     });
 

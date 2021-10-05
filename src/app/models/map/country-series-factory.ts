@@ -14,19 +14,19 @@ export class CountrySeriesFactory {
     let countrySeries = new am4maps.MapPolygonSeries();
     mapChart.series.push(countrySeries);
 
-    // countrySeries.visible = !!config?.hideAtFirst; // start off as hidden
+    countrySeries.visible = !!config?.hideAtFirst; // start off as hidden
     countrySeries.useGeodata = true;
     countrySeries.exclude = ['AQ'];
     countrySeries.dataFields.id = "id";
 
-    // if (config?.geoDataUrl) {
-    //   console.log(config);
-    //   countrySeries.geodataSource.url = config?.geoDataUrl;
-    //   countrySeries.geodataSource.load();
-    //   countrySeries.geodataSource.events.on('done', doneCallback);
-    // } else {
-    //   countrySeries.geodata = am4geodata_worldLow;
-    // }
+    if (config?.geoDataUrl) {
+      console.log(config);
+      countrySeries.geodataSource.url = config?.geoDataUrl;
+      countrySeries.geodataSource.load();
+      countrySeries.geodataSource.events.on('done', doneCallback);
+    } else {
+      countrySeries.geodata = am4geodata_worldLow;
+    }
 
     countrySeries.geodata = am4geodata_worldLow;
 
