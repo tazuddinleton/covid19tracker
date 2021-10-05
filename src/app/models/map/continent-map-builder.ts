@@ -207,5 +207,6 @@ export class ContinentMapBuilder {
   private setDataToCountrySeries(mapData: CovidInfo[], config: BubbleConfig) {
     config.fields.forEach((f) => (this.countrySeries.dataFields[f] = f));
     this.countrySeries.dataFields.value = config.valueField;
+    this.countrySeries.data = mapData;
   }
 }
