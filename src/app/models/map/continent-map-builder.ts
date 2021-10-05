@@ -112,7 +112,7 @@ export class ContinentMapBuilder {
       let sid = _.camelCase(selected);
       this.continentSeries.data = this.continentSeries.data.map((x) => {
         if (x.id == sid) {
-          x['color'] = this.mapChart.colors.getIndex(2);
+          x['color'] = this.mapChart.colors.getIndex(22);
         }
         return x;
       });
