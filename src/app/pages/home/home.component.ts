@@ -1,16 +1,9 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Dropdown } from 'primeng/dropdown';
-
-import * as am4core from '@amcharts/amcharts4/core';
-import * as am4maps from '@amcharts/amcharts4/maps';
-import am4geodata_worldLow from '@amcharts/amcharts4-geodata/worldLow';
-import am4geodata_continentsLow from '@amcharts/amcharts4-geodata/continentsLow';
-import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import { LocationService } from 'src/app/services/location.service';
-import { Continent, Country } from 'src/app/models/location/location';
-import { Subject, Subscription } from 'rxjs';
-import { MapBuilder } from 'src/app/models/map/map-builder';
-import { ThrowStmt } from '@angular/compiler';
+import { Continent } from 'src/app/models/location/location';
+import { Subject } from 'rxjs';
+import { ContinentMapBuilder } from 'src/app/models/map/continent-map-builder';
+
 import { CovidDataService } from 'src/app/services/covid-data.service';
 import { mergeMap, map } from 'rxjs/operators';
 import { CovidInfo } from 'src/app/models/covid-info';
@@ -46,7 +39,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let s =
     this.loc.getContinents()
-    .subscribe(conts => this.continents = conts);
+    .subscribe(conts => this.continents = conts, err => console.error(err));
 
     let s1 =
     this.$selectedContinent.pipe(
@@ -64,14 +57,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe(res => {
       this.drawSelectedContinent(res);
       console.log(res);
-    });
+    },err => console.error(err));
 
     this.subs.add(s, s1);
   }
 
   ngAfterViewInit() {
       this.disposeMapChart();
-      this.continentMap = new MapBuilder(this.mapContainer.nativeElement)
+      this.continentMap = new ContinentMapBuilder(this.mapContainer.nativeElement)
       .withMercatorProjection()
       .withZoomControl()
       .withHomeButton()
@@ -90,7 +83,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.disposeMapChart();
-    this.continentMap = new MapBuilder(this.mapContainer.nativeElement)
+    this.continentMap = new ContinentMapBuilder(this.mapContainer.nativeElement)
     .withMercatorProjection()
     .withZoomControl()
     .withHomeButton()

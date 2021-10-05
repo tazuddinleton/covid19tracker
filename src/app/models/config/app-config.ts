@@ -4,6 +4,7 @@ export interface AppConfig {
   title?: string,
   version?: string,
   covidApiBase?: string;
+  pastDataDuration: number;
   error?: any;
   geo?: Geo;
   locationInfo?: RawLocation[];

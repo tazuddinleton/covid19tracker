@@ -2,6 +2,7 @@
   "title": "Covid-19 Tracker App",
   "version": "0.0.1",
   "covidApiBase": "https://disease.sh",
+  "pastDataDuration": 30,
   "geo": {
     "dataUrl": "https://cdn.amcharts.com/lib/4/geodata/json/",
     "quality": 0,
