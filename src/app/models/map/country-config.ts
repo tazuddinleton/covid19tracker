@@ -5,4 +5,6 @@ export interface CountryConfig{
   included?: string[];
   hideAtFirst?: boolean;
   geoDataUrl?: string;
+  data?: any[];
+  countryCode?: string;
 }

@@ -83,13 +83,23 @@ export class CountryMapBuilder {
       this.countrySeries.include = config?.included;
     }
 
+
+    console.log(config.data[0]);
+
     // Hide each country so we can fade them in
-    if (config?.hideAtFirst) {
-      this.hideCountries();
-      this.countrySeries.events.once('inited', () => {
-        this.hideCountries();
-      });
-    }
+    // if (config?.hideAtFirst) {
+    //   this.hideCountries();
+    //   this.countrySeries.events.once('inited', () => {
+    //     this.hideCountries();
+    //   });
+    // }
+
+    this.countrySeries.events.on('hit', (ev) => {
+      console.log(ev);
+    })
+
+    this.countrySeries.data = config.data;
+    this.countrySeries.dataFields.id = "id";
 
     return this;
   }
@@ -102,8 +112,10 @@ export class CountryMapBuilder {
     let imageTemplate = BubbleSeriesFactory.createImageTemplate(
       this.bubbleSeries,
       this.countrySeries,
-      "State: {province}"
+      "State: {stateName}"
     );
+    this.bubbleSeries.dataFields.id = "id";
+    this.setDataToCountrySeries(config.data, config);
     return this;
   }
 
@@ -132,5 +144,14 @@ export class CountryMapBuilder {
   private showCountries() {
     this.countrySeries.show();
     this.countryTemplate.show();
+  }
+
+
+  private setDataToCountrySeries(mapData: CovidInfo[], config: BubbleConfig) {
+    console.log(config);
+    config.fields.forEach((f) => (this.countrySeries.dataFields[f] = f));
+    this.countrySeries.dataFields.value = config.valueField;
+    this.countrySeries.data = mapData;
+    this.countrySeries.dataFields.id = "id";
   }
 }

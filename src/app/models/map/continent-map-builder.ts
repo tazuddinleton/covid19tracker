@@ -54,6 +54,11 @@ export class ContinentMapBuilder {
     return this;
   }
 
+  withHomeButtonForSinleCountry() {
+    this.homeButton = HomeButtonFactory.create(() => this.mapChart.goHome(), this.mapChart);
+    return this;
+  }
+
   withContinents(selected?: string) {
     // Continents
     this.continentSeries = this.mapChart.series.push(

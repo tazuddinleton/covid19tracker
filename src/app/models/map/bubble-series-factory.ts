@@ -16,13 +16,22 @@ export class BubbleSeriesFactory {
     config.fields.forEach((f) => (series.dataFields[f] = f));
     series.dataFields.value = config.valueField;
 
+    console.log('bubble series: fields', series.dataFields);
+    console.log('bubble series: fields', series.data);
+
+    series.fill = am4core.color("#470334");
+
     series.tooltip.animationDuration = 0;
     series.tooltip.showInViewport = false;
-    series.tooltip.background.fillOpacity = 0.2;
+    series.tooltip.background.fillOpacity = 0.8;
     series.tooltip.getStrokeFromObject = true;
     series.tooltip.getFillFromObject = false;
-    series.tooltip.background.fillOpacity = 0.2;
+
     series.tooltip.background.fill = am4core.color('#26081C');
+
+    series.events.on('hit', (ev) => {
+      console.log(ev);
+    })
     return series;
   }
 
@@ -31,6 +40,8 @@ export class BubbleSeriesFactory {
     parent: am4maps.MapPolygonSeries,
     area: string
   ): am4maps.MapImage {
+
+
     let imageTemplate = series.mapImages.template;
     // if you want bubbles to become bigger when zoomed, set this to false
     imageTemplate.nonScaling = true;
@@ -74,8 +85,10 @@ export class BubbleSeriesFactory {
         var mapImage = dataItem.mapImage;
         var circle = mapImage.children.getIndex(0);
         if (mapImage.dataItem.value == 0) {
+          console.log('hiding cirlcle');
           circle.hide(0);
         } else if (circle.isHidden || circle.isHiding) {
+          console.log('showing cirlcle');
           circle.show();
         }
       });

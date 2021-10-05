@@ -25,6 +25,13 @@ export class CovidDataService {
       return of([]);
   }
 
+  getCountry(code: string): Observable<CovidInfo>{
+    if(!!code)
+      return this.http.get<CovidInfo>(this.appConfig.data.covidApiBase + "/v3/covid-19/countries/" + code);
+    else
+      return of();
+  }
+
   getCountrySummary(code: string, duration: number): Observable<HistoricalData[]>{
     if(!code){
       return of([])
@@ -43,7 +50,7 @@ export class CovidDataService {
         return;
       }
       this.$historicalData.next(this.processData([d]));
-    });
+    }, err => of());
     return this.$historicalData;
   }
 

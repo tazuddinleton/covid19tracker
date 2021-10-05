@@ -14,19 +14,25 @@ export class CountrySeriesFactory {
     let countrySeries = new am4maps.MapPolygonSeries();
     mapChart.series.push(countrySeries);
 
-    countrySeries.visible = !!config?.hideAtFirst; // start off as hidden
+    // countrySeries.visible = !!config?.hideAtFirst; // start off as hidden
     countrySeries.useGeodata = true;
     countrySeries.exclude = ['AQ'];
     countrySeries.dataFields.id = "id";
 
-    if (config?.geoDataUrl) {
-      console.log(config);
-      countrySeries.geodataSource.url = config?.geoDataUrl;
-      countrySeries.geodataSource.load();
-      countrySeries.geodataSource.events.on('done', doneCallback);
-    } else {
-      countrySeries.geodata = am4geodata_worldLow;
-    }
+    // if (config?.geoDataUrl) {
+    //   console.log(config);
+    //   countrySeries.geodataSource.url = config?.geoDataUrl;
+    //   countrySeries.geodataSource.load();
+    //   countrySeries.geodataSource.events.on('done', doneCallback);
+    // } else {
+    //   countrySeries.geodata = am4geodata_worldLow;
+    // }
+
+    countrySeries.geodata = am4geodata_worldLow;
+
+    countrySeries.nonScalingStroke = true;
+    countrySeries.strokeWidth = 0.5;
+    countrySeries.calculateVisualCenter = true;
     return countrySeries;
   }
 
@@ -36,10 +42,13 @@ export class CountrySeriesFactory {
     let template = series.mapPolygons.template;
 
     template.applyOnClones = true;
-    template.fill = am4core.color('#a791b4');
+    template.fill = am4core.color('#3333dd');
     template.fillOpacity = 0.3; // see continents underneath, however, country shapes are more detailed than continents.
-    template.strokeOpacity = 0.5;
+    template.strokeOpacity = 0.15
+    template.setStateOnChildren = true;
+    template.tooltipPosition = "fixed";
     template.nonScalingStroke = true;
+
     template.tooltipText = '{name}';
     return template;
   }
