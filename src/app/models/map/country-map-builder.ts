@@ -87,12 +87,12 @@ export class CountryMapBuilder {
     console.log(config.data[0]);
 
     // Hide each country so we can fade them in
-    // if (config?.hideAtFirst) {
-    //   this.hideCountries();
-    //   this.countrySeries.events.once('inited', () => {
-    //     this.hideCountries();
-    //   });
-    // }
+    if (config?.hideAtFirst) {
+      this.hideCountries();
+      this.countrySeries.events.once('inited', () => {
+        this.hideCountries();
+      });
+    }
 
     this.countrySeries.events.on('hit', (ev) => {
       console.log(ev);
