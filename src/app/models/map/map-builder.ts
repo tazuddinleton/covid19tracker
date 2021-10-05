@@ -257,7 +257,7 @@ export class MapBuilder {
     "target": circle,
     "property": "radius",
     "min": 10,
-    "max": 100,
+    "max": 90,
     "dataField": "value"
   })
 

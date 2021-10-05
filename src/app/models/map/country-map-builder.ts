@@ -133,7 +133,7 @@ export class CountryMapBuilder {
   config.fields.forEach(f => this.bubbleSeries.dataFields[f]=f);
   this.bubbleSeries.dataFields.value = config.valueField;
 
-//  this.setDataToCountrySeries(config.data);
+  this.setDataToCountrySeries(config.data);
 
 
   // adjust tooltip
@@ -177,7 +177,7 @@ export class CountryMapBuilder {
     "target": circle,
     "property": "radius",
     "min": 10,
-    "max": 100,
+    "max": 90,
     "dataField": "value"
   })
 
@@ -226,10 +226,7 @@ export class CountryMapBuilder {
 
   build(): CovidMap {
     this.callbacks.forEach(fn => {
-      console.log('calling calacks', fn);
-      setTimeout(() => {
-        fn();
-      }, 1000);
+      fn();
     });
     console.log('building', this.callbacks);
     return <CovidMap>{
