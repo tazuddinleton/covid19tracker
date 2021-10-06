@@ -9,9 +9,10 @@ import { mergeMap, map } from 'rxjs/operators';
 import { CovidInfo } from 'src/app/models/covid-info';
 import { Router } from '@angular/router';
 import { CovidMap } from 'src/app/models/map/covid-map';
-import { SubsManService } from 'src/app/services/subs-man.service';
+
 import { StateManService } from 'src/app/services/state-man.service';
 import { Field } from 'src/app/constants/data-fields';
+import { SubsMan } from 'src/app/utils/subs-man';
 
 
 @Component({
@@ -22,10 +23,10 @@ import { Field } from 'src/app/constants/data-fields';
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   continents: Continent[];
   selectedCountryInfo: CovidInfo;
-  $selectedContinent: Subject<Continent> = new Subject();
-
+  private selectedContinentSubject: Subject<Continent> = new Subject();
+  private subs: SubsMan = new SubsMan();
   set selectedContinent(continent: Continent){
-      this.$selectedContinent.next(continent);
+      this.selectedContinentSubject.next(continent);
   }
 
   private continentMap: CovidMap;
@@ -35,7 +36,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private loc: LocationService,
     private covData: CovidDataService,
-    private router: Router, private subs: SubsManService, private stateMan: StateManService) {}
+    private router: Router, private stateMan: StateManService) {}
 
   ngOnInit(): void {
 
@@ -44,7 +45,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     .subscribe(conts => this.continents = conts, err => console.error(err));
 
     let s1 =
-    this.$selectedContinent.pipe(
+    this.selectedContinentSubject.pipe(
       map(c => !c ? <Continent>{} : c),
       mergeMap(continent =>
         this.covData.getCountries(continent?.countries?.map(c => c.code))
@@ -75,7 +76,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   drawSelectedContinent(c: Continent) {
-
     c.countries =  c?.countries?.filter(x=> !!x.covidInfo);
 
     let mapData = c?.countries?.map(country => {

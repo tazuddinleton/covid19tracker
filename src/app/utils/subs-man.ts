@@ -1,11 +1,6 @@
-import { Injectable } from '@angular/core';
-import { random } from 'lodash';
-import { Subscription } from 'rxjs';
+import { Subscription } from "rxjs/internal/Subscription";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class SubsManService {
+export class SubsMan {
 
   constructor() { }
 

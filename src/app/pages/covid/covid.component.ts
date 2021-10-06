@@ -9,9 +9,9 @@ import * as _ from 'lodash';
 import { GeoDataService } from 'src/app/services/geo-data.service';
 import { CovidMap } from 'src/app/models/map/covid-map';
 import { CountryMapBuilder } from 'src/app/models/map/country-map-builder';
-import { SubsManService } from 'src/app/services/subs-man.service';
 import { ContinentMapBuilder } from 'src/app/models/map/continent-map-builder';
 import { Field, Param, Province } from 'src/app/constants/data-fields';
+import { SubsMan } from 'src/app/utils/subs-man';
 
 @Component({
   selector: 'app-covid',
@@ -26,10 +26,11 @@ export class CovidComponent implements OnInit, OnDestroy {
   data: HistoricalData[]
   @ViewChild('mapdiv') mapContainer: ElementRef;
 
+  private subs: SubsMan = new SubsMan();
   constructor(private route: ActivatedRoute,
     private covData: CovidDataService,
     private appConfig: AppConfigService,
-    private loc: LocationService, private geoData: GeoDataService, private subs: SubsManService)
+    private loc: LocationService, private geoData: GeoDataService)
     {
     this.route.params.subscribe(p => {
       this.countryCode = p[Param.COUNTRY];
