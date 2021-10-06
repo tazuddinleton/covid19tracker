@@ -7,13 +7,9 @@ import { ContinentMapBuilder } from 'src/app/models/map/continent-map-builder';
 import { CovidDataService } from 'src/app/services/covid-data.service';
 import { mergeMap, map } from 'rxjs/operators';
 import { CovidInfo } from 'src/app/models/covid-info';
-import { Router } from '@angular/router';
 import { CovidMap } from 'src/app/models/map/covid-map';
-
-import { StateManService } from 'src/app/services/state-man.service';
-import { Field } from 'src/app/constants/data-fields';
-import { SubsMan } from 'src/app/utils/subs-man';
-
+import {SubsMan} from '../../utils/subs-man'
+import {Field} from '../../constants/data-fields'
 
 @Component({
   selector: 'app-home',
@@ -35,8 +31,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   constructor(private loc: LocationService,
-    private covData: CovidDataService,
-    private router: Router, private stateMan: StateManService) {}
+    private covData: CovidDataService) {}
 
   ngOnInit(): void {
 
@@ -98,7 +93,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedCountryInfo = <CovidInfo>event.target.dataItem.dataContext;
     this.continentMap.mapChart.closeAllPopups();
     if(this.selectedCountryInfo?.countryInfo){
-      this.stateMan.setSelectedCountryCode(this.selectedCountryInfo?.countryInfo.iso2);
       setTimeout(() => this.continentMap.mapChart.openPopup(this.countryPopup.nativeElement.innerHTML));
     }
   }

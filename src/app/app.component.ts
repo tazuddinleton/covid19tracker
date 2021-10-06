@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppConfigService } from './services/app-config.service';
-import { StateManService } from './services/state-man.service';
 
 @Component({
   selector: 'app-root',
