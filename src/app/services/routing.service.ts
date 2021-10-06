@@ -8,22 +8,12 @@ import { RouteInstance } from '../models/route-instance';
   providedIn: 'root'
 })
 export class RoutingService {
-
-  private n: NavigationEnd;
-  private c: RouteInstance;
   constructor() { }
 
   parseCurrent(nav: NavigationEnd): RouteInstance{
-    this.n = nav;
-    this.parse();
-    return this.c;
-  }
-
-
-  private parse(){
     let seg =
-    this.n.url.split("/")
+    nav.url.split("/")
     .filter(x=> !!x);
-    this.c = <RouteInstance>{countryCode: seg[0], isCovidTabular: seg[seg.length -1] === RouteSegment.COVIDTABULARVIEW};
+    return <RouteInstance>{countryCode: seg[0], isCovidTabular: seg[seg.length -1] === RouteSegment.COVIDTABULARVIEW};
   }
 }
