@@ -3,3 +3,7 @@ export enum CountryCode{
   AQ='AQ',
   AN='AN'
 }
+
+export enum CountryName{
+  ANTARCTICA='antarctica'
+}

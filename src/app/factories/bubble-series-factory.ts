@@ -1,4 +1,4 @@
-import { BubbleConfig } from './bubble-config';
+import { BubbleConfig } from '../models/map/bubble-config';
 import * as am4maps from '@amcharts/amcharts4/maps';
 import * as am4core from '@amcharts/amcharts4/core';
 import { template } from 'lodash';

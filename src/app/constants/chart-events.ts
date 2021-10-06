@@ -1,4 +1,5 @@
-export enum ChartEvent{
+export enum ChartEvent {
   HIT = 'hit',
-  DONE = 'done'
+  DONE = 'done',
+  INITED = "inited"
 }

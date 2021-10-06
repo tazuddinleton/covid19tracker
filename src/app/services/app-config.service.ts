@@ -10,12 +10,23 @@ export class AppConfigService {
   constructor(private http: HttpClient) {}
 
   loadConfig(){
-    this.http.get<AppConfig>(environment.configUrl)
+    return this.http.get<AppConfig>(environment.configUrl)
     .toPromise()
-    .then(data => this.config = data)
+    .then(data => {
+      this.config = data;
+      this.prepareMap();
+    })
     .catch(err => this.config.error = err);
    }
   get data():AppConfig{
     return this.config;
+  }
+
+  private prepareMap(){
+    let map: Map<string, MapInfo> = new Map();
+    for(let key in this.config.geo.geodataMap){
+      map.set(key, this.config.geo.geodataMap[key])
+    }
+    this.config.geo.geodataMap = map;
   }
 }

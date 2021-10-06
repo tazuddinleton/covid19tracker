@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { defaultTo } from 'lodash';
 import { Observable, of, Subject, Subscriber } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { CountryCode } from '../constants/country-codes';
+import { CountryCode } from '../constants/country';
 import { State } from '../models/config/app-config';
 import { CovidInfo, HistoricalData, HistoryRaw, UsStateResult } from '../models/covid-info';
 import { AppConfigService } from './app-config.service';

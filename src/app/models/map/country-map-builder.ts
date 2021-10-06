@@ -11,9 +11,11 @@ import { CountryConfig } from './country-config';
 import { BubbleConfig } from './bubble-config';
 import { CovidMap } from './covid-map';
 
-import { CountrySeriesFactory } from './country-series-factory';
-import { HomeButtonFactory } from './home-button-factory';
-import { BubbleSeriesFactory } from './bubble-series-factory';
+import { BubbleSeriesFactory } from '../../factories/bubble-series-factory';
+import { HomeButtonFactory } from 'src/app/factories/home-button-factory';
+import { CountrySeriesFactory } from 'src/app/factories/country-series-factory';
+import { ChartEvent } from 'src/app/constants/chart-events';
+import { Field } from 'src/app/constants/data-fields';
 
 export class CountryMapBuilder {
   private readonly mapChart: am4maps.MapChart;
@@ -75,7 +77,7 @@ export class CountryMapBuilder {
     let hover = CountrySeriesFactory.createHover(this.countryTemplate);
 
     if (config?.clickHandler) {
-      this.countryTemplate.events.on('hit', config?.clickHandler);
+      this.countryTemplate.events.on(ChartEvent.HIT, config?.clickHandler);
     }
 
     if (config?.included?.length) {
@@ -86,16 +88,13 @@ export class CountryMapBuilder {
     // Hide each country so we can fade them in
     if (config?.hideAtFirst) {
       this.hideCountries();
-      this.countrySeries.events.once('inited', () => {
+      this.countrySeries.events.once(ChartEvent.INITED, () => {
         this.hideCountries();
       });
     }
 
-    this.countrySeries.events.on('hit', (ev) => {
-    })
-
     this.countrySeries.data = config.data;
-    this.countrySeries.dataFields.id = "id";
+    this.countrySeries.dataFields.id = Field.ID;
 
     return this;
   }
@@ -110,7 +109,7 @@ export class CountryMapBuilder {
       this.countrySeries,
       "State: {stateName}"
     );
-    this.bubbleSeries.dataFields.id = "id";
+    this.bubbleSeries.dataFields.id = Field.ID;
     this.setDataToCountrySeries(config.data, config);
     return this;
   }
@@ -146,6 +145,6 @@ export class CountryMapBuilder {
     config.fields.forEach((f) => (this.countrySeries.dataFields[f] = f));
     this.countrySeries.dataFields.value = config.valueField;
     this.countrySeries.data = mapData;
-    this.countrySeries.dataFields.id = "id";
+    this.countrySeries.dataFields.id = Field.ID;
   }
 }

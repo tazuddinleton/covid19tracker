@@ -2,10 +2,10 @@ import * as am4maps from '@amcharts/amcharts4/maps';
 import * as am4core from '@amcharts/amcharts4/core';
 
 import am4geodata_worldLow from '@amcharts/amcharts4-geodata/worldLow';
-import { CountryConfig } from './country-config';
 import { Field } from 'src/app/constants/data-fields';
 import { ChartEvent } from 'src/app/constants/chart-events';
-import { CountryCode } from 'src/app/constants/country-codes';
+import { CountryCode } from 'src/app/constants/country';
+import { CountryConfig } from '../models/map/country-config';
 
 
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import {map} from 'rxjs/operators'
-import { CountryCode } from '../constants/country-codes';
+import { CountryCode } from '../constants/country';
 import { Continent, Country, RawLocation } from '../models/location/location';
 import { LocUtils } from '../utils/locationUtil';
 import { AppConfigService } from './app-config.service';

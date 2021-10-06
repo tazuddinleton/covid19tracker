@@ -7,9 +7,11 @@ import { CovidInfo } from '../covid-info';
 import { CountryConfig } from './country-config';
 import { BubbleConfig } from './bubble-config';
 import { CovidMap } from './covid-map';
-import { HomeButtonFactory } from './home-button-factory';
-import { CountrySeriesFactory } from './country-series-factory';
-import { BubbleSeriesFactory } from './bubble-series-factory';
+import { BubbleSeriesFactory } from '../../factories/bubble-series-factory';
+import { ChartEvent } from 'src/app/constants/chart-events';
+import { CountryName } from 'src/app/constants/country';
+import { HomeButtonFactory } from 'src/app/factories/home-button-factory';
+import { CountrySeriesFactory } from 'src/app/factories/country-series-factory';
 
 export class ContinentMapBuilder {
   private readonly mapChart: am4maps.MapChart;
@@ -66,19 +68,13 @@ export class ContinentMapBuilder {
     );
     this.continentSeries.geodata = am4geodata_continentsLow;
     this.continentSeries.useGeodata = true;
-    this.continentSeries.exclude = ['antarctica'];
+    this.continentSeries.exclude = [CountryName.ANTARCTICA];
 
     this.continentTemplate = this.continentSeries.mapPolygons.template;
     this.continentTemplate.tooltipText = '{name}';
     this.continentTemplate.properties.fillOpacity = 0.8; // Reduce conflict with back to continents map label
     this.continentTemplate.propertyFields.fill = 'color';
     this.continentTemplate.nonScalingStroke = true;
-
-    //this.continentTemplate.events.on('hit', (ev) => this.zoomToContinent(ev.target));
-
-    // var contintentHover = this.continentTemplate.states.create('hover');
-    // contintentHover.properties.fill = this.hoverColor;
-    // contintentHover.properties.stroke = this.hoverColor;
 
     var continentActive = this.continentTemplate.states.create('active');
     continentActive.properties.fill = this.hoverColor;
@@ -149,7 +145,7 @@ export class ContinentMapBuilder {
     let countryHover = CountrySeriesFactory.createHover(this.countryTemplate);
 
     if (config?.clickHandler) {
-      this.countryTemplate.events.on('hit', config?.clickHandler);
+      this.countryTemplate.events.on(ChartEvent.HIT, config?.clickHandler);
     }
 
     if (config?.included?.length) {
@@ -159,7 +155,7 @@ export class ContinentMapBuilder {
     // Hide each country so we can fade them in
     if (config?.hideAtFirst) {
       this.hideCountries();
-      this.countrySeries.events.once('inited', () => {
+      this.countrySeries.events.once(ChartEvent.INITED, () => {
         this.hideCountries();
       });
     }
