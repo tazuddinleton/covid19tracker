@@ -1,14 +1,20 @@
 import { RawLocation } from "../location/location";
 
 export interface AppConfig {
-  title?: string,
-  version?: string,
-  covidApiBase?: string;
+  title?: string;
+  version?: string;
+  api?: Api;
   pastDataDuration: number;
   error?: any;
   geo?: Geo;
   locationInfo?: RawLocation[];
   countriesStates?: CountryState[];
+}
+export interface Api{
+  covidApiBase?: string;
+  countries?: string;
+  historical?: string;
+  states?: string;
 }
 
 export interface Geo {
