@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppConfigService } from './services/app-config.service';
 import { HomeComponent } from './pages/home/home.component';
-import { CovidTabViewComponent } from './pages/covid/covid-tab-view.component';
+import { CovidTabViewComponent } from './pages/covid-tab-view/covid-tab-view.component';
 import { VaccineComponent } from './pages/vaccine/vaccine.component';
 
 import { DropdownModule } from 'primeng/dropdown';
@@ -18,7 +18,7 @@ import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { RouteReuseStrategy } from '@angular/router';
 import { RouterStrategy } from './router-strategy';
-import { CovidTabPanelComponent } from './components/covid-map/covid-tab-panel.component';
+import { CovidTabPanelComponent } from './pages/covid-tab-panel/covid-tab-panel.component';
 
 
 
