@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CovidComponent } from './covid.component';
+import { CovidTabPanelComponent } from './covid-tab-panel.component';
 
-describe('CovidComponent', () => {
-  let component: CovidComponent;
-  let fixture: ComponentFixture<CovidComponent>;
+describe('CovidMapComponent', () => {
+  let component: CovidTabPanelComponent;
+  let fixture: ComponentFixture<CovidTabPanelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CovidComponent ]
+      declarations: [ CovidTabPanelComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CovidComponent);
+    fixture = TestBed.createComponent(CovidTabPanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppConfigService } from './services/app-config.service';
 import { HomeComponent } from './pages/home/home.component';
-import { CovidComponent } from './pages/covid/covid.component';
+import { CovidTabViewComponent } from './pages/covid/covid-tab-view.component';
 import { VaccineComponent } from './pages/vaccine/vaccine.component';
 
 import { DropdownModule } from 'primeng/dropdown';
@@ -18,6 +18,8 @@ import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { RouteReuseStrategy } from '@angular/router';
 import { RouterStrategy } from './router-strategy';
+import { CovidTabPanelComponent } from './components/covid-map/covid-tab-panel.component';
+
 
 
 
@@ -30,8 +32,10 @@ function appInitFactory(configService: AppConfigService): Function{
   declarations: [
     AppComponent,
     HomeComponent,
-    CovidComponent,
+    CovidTabViewComponent,
     VaccineComponent,
+    CovidTabPanelComponent,
+
 
   ],
   imports: [
@@ -51,10 +55,11 @@ function appInitFactory(configService: AppConfigService): Function{
       multi: true,
       deps: [AppConfigService]
     },
-    {
-      provide: RouteReuseStrategy,
-      useClass: RouterStrategy
-    }
+    // Todo: later enable this
+    // {
+    //   provide: RouteReuseStrategy,
+    //   useClass: RouterStrategy
+    // }
   ],
   bootstrap: [AppComponent]
 })

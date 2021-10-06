@@ -16,9 +16,11 @@ export class RouterStrategy implements RouteReuseStrategy{
     return !! this.handlers.get(this.getKey(route));
   }
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
+
     if (!route.routeConfig){
       return null;
     }
+    console.log(this.handlers.get(this.getKey(route)));
     return this.handlers.get(this.getKey(route));
 
   }
@@ -28,6 +30,7 @@ export class RouterStrategy implements RouteReuseStrategy{
 
 
   private getKey(route: ActivatedRouteSnapshot):string {
+    console.log('key: ', route.routeConfig.path || "home")
     return route.routeConfig.path || "home";
   }
 }
