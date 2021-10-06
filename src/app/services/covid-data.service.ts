@@ -21,15 +21,13 @@ export class CovidDataService {
   getCountries(countryCodes: string[]): Observable<CovidInfo[]>{
     if(!!countryCodes)
       return this.http.get<CovidInfo[]>(this.appConfig.data.covidApiBase + "/v3/covid-19/countries/" + countryCodes.join(","));
-    else
-      return of([]);
+    return of([]);
   }
 
   getCountry(code: string): Observable<CovidInfo>{
     if(!!code)
       return this.http.get<CovidInfo>(this.appConfig.data.covidApiBase + "/v3/covid-19/countries/" + code);
-    else
-      return of();
+    return of();
   }
 
   getCountrySummary(code: string, duration: number): Observable<HistoricalData[]>{
@@ -92,15 +90,12 @@ export class CovidDataService {
   }
 
   private mapProvinceToState(data: HistoricalData[], countryCode: string): HistoricalData[]{
-
-
     let map = this.getStateMap(countryCode);
     data.forEach(d => {
       let s = map.get(d.province);
       d.stateCode = s?.abbreviation;
       d.stateName = s?.name;
     });
-
     return data;
   }
 

@@ -6,25 +6,16 @@ import { AppConfig, MapInfo } from '../models/config/app-config';
   providedIn: 'root'
 })
 export class AppConfigService {
-  private _config: AppConfig;
+  private config: AppConfig;
   constructor(private http: HttpClient) {}
 
-  async loadConfig(){
-    try {
-      this._config = await this.http.get<AppConfig>(environment.configUrl).toPromise();
-
-
-      let map: Map<string, MapInfo> = new Map();
-      for(let key in this._config.geo.geodataMap){
-        map.set(key, this._config.geo.geodataMap[key])
-      }
-      this._config.geo.geodataMap = map;
-    } catch (err) {
-      this._config.error = err;
-    }
-  }
-
+  loadConfig(){
+    this.http.get<AppConfig>(environment.configUrl)
+    .toPromise()
+    .then(data => this.config = data)
+    .catch(err => this.config.error = err);
+   }
   get data():AppConfig{
-    return this._config;
+    return this.config;
   }
 }
