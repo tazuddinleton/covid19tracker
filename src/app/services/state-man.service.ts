@@ -6,14 +6,14 @@ import { Observable, Subject } from 'rxjs';
 })
 export class StateManService {
 
-  private $selectedCountryCode: Subject<string> = new Subject();
+  private selectedCountryCode: Subject<string> = new Subject();
   constructor() { }
 
   getSelectedCountryCode(): Observable<string>{
-    return this.$selectedCountryCode;
+    return this.selectedCountryCode;
   }
 
   setSelectedCountryCode(code: string){
-    this.$selectedCountryCode.next(code);
+    this.selectedCountryCode.next(code);
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import {map} from 'rxjs/operators'
+import { CountryCode } from '../constants/country-codes';
 import { Continent, Country, RawLocation } from '../models/location/location';
 import { LocUtils } from '../utils/locationUtil';
 import { AppConfigService } from './app-config.service';
@@ -22,7 +23,7 @@ export class LocationService {
   }
 
   getContinents():Observable<Continent[]> {
-    return of([...this.continents.values()].filter(x=> x.code !== 'AN'));
+    return of([...this.continents.values()].filter(x=> x.code !== CountryCode.AN));
   }
 
   getCountryCodes(contCode: string): Observable<string[]>{

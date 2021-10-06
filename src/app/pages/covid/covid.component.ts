@@ -11,6 +11,7 @@ import { CovidMap } from 'src/app/models/map/covid-map';
 import { CountryMapBuilder } from 'src/app/models/map/country-map-builder';
 import { SubsManService } from 'src/app/services/subs-man.service';
 import { ContinentMapBuilder } from 'src/app/models/map/continent-map-builder';
+import { Field, Param, Province } from 'src/app/constants/data-fields';
 
 @Component({
   selector: 'app-covid',
@@ -31,7 +32,7 @@ export class CovidComponent implements OnInit, OnDestroy {
     private loc: LocationService, private geoData: GeoDataService, private subs: SubsManService)
     {
     this.route.params.subscribe(p => {
-      this.countryCode = p['country'];
+      this.countryCode = p[Param.COUNTRY];
       this.countryName = this.loc.getCountryName(this.countryCode);
     });
    }
@@ -45,7 +46,7 @@ export class CovidComponent implements OnInit, OnDestroy {
         return x;
       });
 
-      if(this.data[0].province == "mainland"){
+      if(this.data[0].province == Province.MAINLAND){
         this.drawSelectedCountry(this.countryCode);
       }else{
         this.drawMap();
@@ -70,7 +71,7 @@ export class CovidComponent implements OnInit, OnDestroy {
       hideAtFirst: true,
       data: this.data
     })
-    .withStateBubbles({data: this.data, fields: ["deaths", "cases", "recovered", "id"], valueField: "cases"})
+    .withStateBubbles({data: this.data, fields: [Field.CASES, Field.DEATHS, Field.RECOVERED, Field.ID], valueField: Field.CASES})
     .build();
   }
 
@@ -84,7 +85,7 @@ export class CovidComponent implements OnInit, OnDestroy {
       .withZoomControl()
       .withHomeButtonForSinleCountry()
       .withCountries({included: [code]})
-      .withBubbles({data: [covidInfo], fields: ["active", "deaths", "cases", "recovered", "id"], valueField: "active"})
+      .withBubbles({data: [covidInfo], fields: [Field.ACTIVE, Field.DEATHS, Field.CASES, Field.RECOVERED, Field.ID], valueField: Field.ACTIVE})
       .build();
     });
 

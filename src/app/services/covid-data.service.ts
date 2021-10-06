@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { defaultTo } from 'lodash';
 import { Observable, of, Subject, Subscriber } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { CountryCode } from '../constants/country-codes';
 import { State } from '../models/config/app-config';
 import { CovidInfo, HistoricalData, HistoryRaw, UsStateResult } from '../models/covid-info';
 import { AppConfigService } from './app-config.service';
@@ -34,7 +35,7 @@ export class CovidDataService {
     if(!code){
       return of([])
     }
-    if(code === "US"){
+    if(code == CountryCode.US){
       return this.getUsSummary(code);
     }
     this.http.get<HistoryRaw>(`${this.appConfig.data.covidApiBase}/v3/covid-19/historical/${code}?lastdays=${duration}`)

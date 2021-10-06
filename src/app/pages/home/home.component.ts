@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { CovidMap } from 'src/app/models/map/covid-map';
 import { SubsManService } from 'src/app/services/subs-man.service';
 import { StateManService } from 'src/app/services/state-man.service';
+import { Field } from 'src/app/constants/data-fields';
 
 
 @Component({
@@ -89,7 +90,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     .withHomeButton()
     .withContinents(c?.name)
     .withCountries({clickHandler: ev=> this.onCountryClicked(ev)})
-    .withBubbles({data: mapData, fields: ["active", "deaths", "cases", "recovered", "id"], valueField: "active"})
+    .withBubbles({data: mapData, fields: [Field.ACTIVE, Field.DEATHS, Field.CASES, Field.RECOVERED, Field.ID], valueField: Field.ACTIVE})
     .build();
   }
 

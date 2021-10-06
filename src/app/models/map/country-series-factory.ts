@@ -3,6 +3,9 @@ import * as am4core from '@amcharts/amcharts4/core';
 
 import am4geodata_worldLow from '@amcharts/amcharts4-geodata/worldLow';
 import { CountryConfig } from './country-config';
+import { Field } from 'src/app/constants/data-fields';
+import { ChartEvent } from 'src/app/constants/chart-events';
+import { CountryCode } from 'src/app/constants/country-codes';
 
 
 
@@ -16,18 +19,16 @@ export class CountrySeriesFactory {
 
     countrySeries.visible = !!config?.hideAtFirst; // start off as hidden
     countrySeries.useGeodata = true;
-    countrySeries.exclude = ['AQ'];
-    countrySeries.dataFields.id = "id";
+    countrySeries.exclude = [CountryCode.AQ];
+    countrySeries.dataFields.id = Field.ID;
 
     if (config?.geoDataUrl) {
       countrySeries.geodataSource.url = config?.geoDataUrl;
       countrySeries.geodataSource.load();
-      countrySeries.geodataSource.events.on('done', doneCallback);
+      countrySeries.geodataSource.events.on(ChartEvent.DONE, doneCallback);
     } else {
       countrySeries.geodata = am4geodata_worldLow;
     }
-
-    countrySeries.geodata = am4geodata_worldLow;
 
     countrySeries.nonScalingStroke = true;
     countrySeries.strokeWidth = 0.5;
