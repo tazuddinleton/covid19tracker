@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, take, takeLast } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import { SubsMan } from 'src/app/utils/subs-man';
   templateUrl: './covid-tab-panel.component.html',
   styleUrls: ['./covid-tab-panel.component.scss']
 })
-export class CovidTabPanelComponent implements OnInit {
+export class CovidTabPanelComponent implements AfterViewInit, OnDestroy{
 
 
   private countryMap: CovidMap;
@@ -53,10 +53,6 @@ export class CovidTabPanelComponent implements OnInit {
         console.log(this.currentRoute);
       });
    }
-
-  ngOnInit(): void {
-
-  }
 
   ngAfterViewInit(){
     let s =

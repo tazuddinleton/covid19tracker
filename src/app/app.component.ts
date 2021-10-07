@@ -6,7 +6,7 @@ import { AppConfigService } from './services/app-config.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit{
   title: string;
   version: string;
   constructor(private config: AppConfigService){}
@@ -15,8 +15,5 @@ export class AppComponent implements OnInit, OnDestroy {
     this.title = this.config.data.title;
     this.version = this.config.data.version;
     document.getElementsByTagName('title')[0].innerText = `${this.title}`;
-  }
-
-  ngOnDestroy(){
   }
 }
